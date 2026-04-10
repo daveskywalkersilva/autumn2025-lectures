@@ -113,7 +113,6 @@ The next step of enabling Artificial Intelligence is, no doubt, the usage in AI 
 The AI Workflow can be described as a Logic App type of workflow where we're able to include multiple functions or, in this case, LMMs. By doing so, we enable API interaction, triggers and another tools usage.
 It's similar to what Developers nowadays would do, by fetching data themselves and interate questions with it before copying and pasting to another systems - but with no human interaction.
 
-::: mermaid
 graph LR
     A[Trigger: Recurrence] -- "Every day at 8:00 AM" --> B[Action: Azure Logic Apps / Python]
     B -- "Read Excel (Graph API)" --> C{Iterate Links}
@@ -125,7 +124,6 @@ graph LR
     end
     F -- "Save as Draft" --> H[Review Queue]
     G -- "Save as Draft" --> H
-:::
 
 However, notice that an AI Workflow still lacks autonomy compaired with the AI Agent, due to being a "Assembly Line" where the LLM is just a worker at three different stations
 
