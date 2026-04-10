@@ -107,15 +107,60 @@ By storing data in the form of embeddings - which are numeric vectors representi
 
 ---
 
-### **VII. AI Workflows**
-The next step of enabling LMMs is, no doubt, the usage in AI Workflows.
+### **VII. Accessing external systems: AI Workflows**
+The next step of enabling Artificial Intelligence is, no doubt, the usage in AI Workflows, where LMMs are but components.
+
+The AI Workflow can be described as a Logic App type of workflow where we're able to include multiple functions or, in this case, LMMs. By doing so, we enable API interaction, triggers and another tools usage.
+It's similar to what Developers nowadays would do, by fetching data themselves and interate questions with it before copying and pasting to another systems - but with no human interaction.
+
+::: mermaid
+graph LR
+    A[Trigger: Recurrence] -- "Every day at 8:00 AM" --> B[Action: Azure Logic Apps / Python]
+    B -- "Read Excel (Graph API)" --> C{Iterate Links}
+    C -- "URL Context" --> D[Perplexity AI API]
+    D -- "Research & Summarize" --> E{Parallel Processing}
+    subgraph Content_Drafting
+    E -- "Gen: Professional Tone" --> F[LinkedIn API]
+    E -- "Gen: Visual/Punchy Tone" --> G[Instagram Graph API]
+    end
+    F -- "Save as Draft" --> H[Review Queue]
+    G -- "Save as Draft" --> H
+:::
+
+However, notice that an AI Workflow still lacks autonomy compaired with the AI Agent, due to being a "Assembly Line" where the LLM is just a worker at three different stations
 
 
-### **VII. Additional Knowledge Sources: Long Context Window**
+### 1. The Key Distinction: Static vs. Dynamic
+* **AI Workflow (LLM alone):** The LLM is a **component** in a predefined, hard-coded pipeline. You (the developer) define the steps in Python or a Logic App. The LLM just processes the text at each step.
+* **AI Agent (LLM as Controller):** The LLM **is** the pipeline. You give it a goal, and it decides which steps to take and which tools to call.
+
+
+| Feature | **AI Workflow (LLM-Based)** | **AI Agent** |
+| :--- | :--- | :--- |
+| **Pathing** | **Deterministic:** Step A always leads to B. | **Probabilistic:** Path changes based on data. |
+| **Logic** | Defined by **Code** (Python/Logic Apps). | Defined by **Reasoning** (LLM "Thoughts"). |
+| **Autonomy** | Low (The "System" is in charge). | High (The "Agent" is in charge). |
+| **Reliability** | High (Easier to test/predict). | Variable (Harder to "control" behavior). |
+| **Tools** | Tools are called by the **Workflow code**. | Tools are called by the **LLM**. |
+
+> Having access to tools does not make an AI Workflow Agentic. Being able to choose which tools to use and access then without a deterministic path does - it's about autonomy.
+
+### **VIII. Something Dark**
 
 ---
 
-Issues with RAG assisted LMMs: 
+### **Communication Between Agents: MCP**
+Talk also about API
+
+
+(After the introduction of Agents)
+### **Pratical Usage of Agents in a project: Tools and Skills**
+
+###
+
+---
+
+
 
 ### **VII. The Road to AI Agents**
 
