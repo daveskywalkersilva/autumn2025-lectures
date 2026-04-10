@@ -14,31 +14,26 @@ The AI technology is best understood as a series of nested layers, with each sub
 ---
 
 ### **II. The Foundation Model (The "Generalist" DL)**
-From the Deep Learning Intelligence approach - usage of Neural networks - came the concept of Foundational Model, which shares the same algorithm, but with increased neural depth, a much bigger data pool (all text) and more general goal, leading to be defined as a massive Deep Learning model that has finished its "General Education" (pre-training). As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (called "*finetunning*").
-Below you can find a comparisson of both:
+From the Deep Learning Intelligence approach - usage of Neural networks - came the concept of Foundational Model, which **shares the same algorithm**, but with an **increased neural depth**, a much **bigger data pool** and more **general knowledge** goal, leading to be defined as a massive Deep Learning model that has finished its "General Education" (pre-training). 
+
+$$FM = Large\text{-}Scale \: Data + Transformer \: (Architecture) + Self\text{-}Supervised \: Learning \: (like \: NTP)$$
+
+As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (called "*finetunning*").
+Below you can find a comparisson of both a traditional DL with the FM:
 
 | Feature | Traditional Deep Learning Model | Foundation Model (LLMs, etc.) |
 | :--- | :--- | :--- |
 | **Training Scope** | **Task-Specific:** You train a model specifically to detect "Hard Hats" in images. | **Generalist:** The model is trained on "everything" to understand the concept of images/text. |
 | **Data Requirement** | Requires **Labeled Data** (e.g., thousands of photos tagged "Hard Hat"). | Uses **Self-Supervised Learning** on massive unlabeled data (the internet). |
 | **Architectural Choice** | Can be many types (CNNs, RNNs, LSTMs). | Almost exclusively **Transformers** (a specific DL architecture). |
-| **Reusability** | Low. A hard-hat detector can't suddenly write a poem. | **High.** One model (GPT-4) can write code, summarize text, and act as a logic engine. |
+| **Reusability** | **Low.** A hard-hat detector can't suddenly write a poem. | **High.** One model (GPT-4) can write code, summarize text, and act as a logic engine. |
 
-Although different, the classification of LLMs as Deep Learning is based on 3 specific technical characteristics:
+> Note: Self-Supervised Learning is when we grab the data and split it into training data and evaluation data. The goal is to train the model so it can predict the original data as the output.
 
-#### **1. Neural Network Architecture**
-Deep Learning is defined by the use of **artificial neural networks** with many layers (hence "deep"). 
-* **LLMs:** These are built using the **Transformer architecture**, which is a specific type of deep neural network. 
-* **Depth:** Modern LLMs (like GPT-4 or Llama 3) have hundreds of layers and billions of parameters. This massive "depth" is what allows them to understand complex linguistic nuances.
-
-#### **2. Feature Representation Learning**
-In traditional Machine Learning, a human often has to define "features" (e.g., in a house price model, features might be "square footage" or "zip code"). 
-* **DL Characteristic:** Deep Learning models learn to extract features themselves from raw data. 
-* **LLM Application:** An LLM doesn't need to be told what a "verb" or "sarcasm" is; it learns these abstract representations autonomously by processing trillions of tokens during training.
-
-#### **3. The Training Paradigm**
-GenAI and LLMs utilize the core mathematical engines of Deep Learning: **Backpropagation** and **Gradient Descent**.
-* They learn by calculating the "error" (loss) between their predicted next word and the actual word in the training text, then updating their internal weights across all layers to minimize that error.
+The classification of Foundational Models as Deep Learning is based on 3 specific technical characteristics:
+    1. Same **Neural Network Architecture:** (like **Transformer architecture**) with many layers (hence "deep"), with the only difference being the scale of it - modern LLMs (like GPT-4 or Llama 3) have hundreds of layers and billions of parameters. This massive "depth" is what allows them to understand complex linguistic nuances.
+    2. Same **Feature Representation Learning:** where in traditional ML there would be the need of a human to define "features" (e.g., in a house price model, features might be "square footage" or "zip code") - something that in Deep Learning, models learn to extract features themselves from raw data
+    3. Same **Training Paradigm:** meaning that FMs utilize the same core mathematical engines of Deep Learning in training - **Backpropagation** and **Gradient Descent**. They learn by calculating the "error" (loss) between their predicted next word and the actual word in the training text, then updating their internal weights across all layers to minimize that error.
 
 > A good closing remark is that **AI is the Simulation Layer**, **ML the Pattern Layer**, **DL the Neural Layer** and **GenAI the Creative Layer**.
 
@@ -46,23 +41,26 @@ GenAI and LLMs utilize the core mathematical engines of Deep Learning: **Backpro
 
 ### **III. Foundation Models, Large Language Models and Generative AI**
 
-The Large Language models (LLMs) are nothing more than a subset of Foundational Models that interpret Language (by splitting them into tokens and converting those into a number) to understand a prompt to reach a specific outcome. Kin to it, would be the Vision Foundation Models (for images) and the Audio Language Models (for Sound), that together would be enabled by Large Multimodal Models (LMMs).
+The **Large Language models (LLMs)** are nothing more than a **derivative of Foundational Models that interpret Language** (by splitting them into tokens and converting those into a number) to understand a prompt to reach a specific outcome. Kin to it, would be the Vision Foundation Models (for images) and the Audio Language Models (for Sound), that together would be enabled by a single **Large Multimodal Models (LMMs)**.
+
+Since it's a derivative type (of *text-to-text* sort), we can see that it's equation definition is simply a more limited version of the one for FM:
 
 $$\text{LLM} = (\underbrace{\text{Text Data}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Next-Token Prediction}}_\text{Training Goal}$$
 
-Similarly to how a database doesn't "understand" a string - it understands data types - the Foundation Model doesn't "read" and write text either, leading to the following interpretation of the equation: 
+Digging into it: similarly to how a database doesn't "understand" a string - it understands data types - the agnostic Foundation Model doesn't "read" and write text either, leading to the following components of the equation: 
 * **The Modality ("Text-to-Input") phase:** This is the **Tokenizer** function. It translates human language into numerical vectors (embeddings) that the Foundation Model can process to both read and write.
 * **The "Thinking/Understanding" phase:** This is the **Transformer** function. It uses its deep learning layers to calculate the relationship between those numbers across many layers.
-* **Next "Prediction" (NTP) phase:** An objective function that drives the entire learning process of an LLM. It is a form of Self-Supervised Learning where the data provides its own labels, instead of human labels like in traditional DL.
+* **Next "Prediction" (NTP) phase:** An objective function that drives the entire learning process of an LLM. It is a form of Self-Supervised Learning where the data provides its own targets and prediction, instead of human labeled data input like in traditional DL.
   
 The model is not "taught" facts through the Next Token Prediction. Instead, it is given a massive corpus of text and asked millions of times: *"Given these $n$ tokens, what is the most statistically probable $(n+1)$ token?"*
 * **The Input:** "The Azure Architect deployed a..."
 * **The Target:** "...service."
-* **The Adjustment:** If the model guesses incorrectly, the **Deep Learning** backpropagation adjusts the internal weights to make the correct answer more likely next time.
+* **The Adjustment:** If the model guesses incorrectly, the **Deep Learning backpropagation** adjusts the internal weights to make the correct answer more likely next time.
 
 It's in the Next Token Prediction (NTP) that lays the core distinction between Generative AI and the traditional type of AI, since the training can be used to either generate new combinations (generative) or to identify mistakes (discriminate).
 
-> Notice that since a LLM and LMM are both subset of Foundational Models (FM), the equation would be the same, only changing the input data, if anything.
+> Whilst both LLM and LMM are subsets of Foundational Models (FM), both are "brothers" to each other. One is specific to Text only, the other is more of a generalist. They are just a different type of trained Foundational Modules. 
+$$LLM = Text \: Data \: (Modality) + Transformer \: (Architecture) + NTP \: (Goal)$$
 
 ---
 
@@ -170,7 +168,7 @@ So while an **AI Workflow** is a set of "train tracks" designed by an architect,
 
 This means that an AI Agent can be defined as a Foundational Model based system that is capable of completing a goal by breaking it down into a series of steps, calling external tools, and evaluating its own progress, in an autonomous fashion using a thinking Loop:
 
-$$Agent = \underbrace{\left[ (LLM + Modality) \times \text{NTP} \right]}_{\text{GenAI (Brain or Engine)}} + \underbrace{Planning}_{\text{Skills}} + \underbrace{Memory}_{\text{Context/RAG}} + \underbrace{Tools\ Use}_{\text{Action Layer}}$$
+$$Agent = \underbrace{ \left[ (LLM + Modality) \times \text{NTP} \right] }_{\text{GenAI (Brain or Engine)}} + \underbrace{Planning}_{\text{Skills}} + \underbrace{Memory}_{\text{Context/RAG}} + \underbrace{Tools\ Use}_{\text{Action Layer}}$$
 
 We say **"Thinking" Loop:** because unlike a standard LMM that provides a single response by "running", an Agent follows a loop thinking process like the **ReAct (Reason + Act)** and **Plan-and-Execute** pattern:
     1. **Perceive:** The agent receives a goal or an observation from its last action.
@@ -211,8 +209,24 @@ To make an Agent useful in an integration background, you must equip it with a *
 * **Memory:** * **Short-term:** The current session's conversation history.
     * **Long-term:** Usually implemented via **Vector Databases** (like Azure AI Search), allowing the agent to "remember" documentation or previous project configurations.
 
+IMPORTANT:
+
+LLM and LMMs are brothers.
+One is specific to Test only, the other is more of a generalist.
+They are just a different type of trained Foundational Modules.
+
+The Objective (NTP/Self-Supervision): Instead of humans labeling data (expensive/slow), the model hides a part of the data from itself and tries to predict it.
 
 
+* **LLM (Large Language Model):**
+    $$LLM = Text \: Data \: (Modality) + Transformer \: (Architecture) + NTP \: (Goal)$$
+* **LMM (Large Multimodal Model):**
+    $$LMM = Multi\text{-}modal \: Data \: (Text, \: Image, \: Audio) + Transformer \: (Architecture) + Next\text{-}Token/Patch \: Prediction$$
+* **Foundation Model (The Parent Class):**
+    $$FM = Large\text{-}Scale \: Data + Transformer \: (Architecture) + Self\text{-}Supervised \: Learning \: (like \: NTP)$$
+
+If you tell a stakeholder, "We are using a Foundation Model," you are describing the tier of technology (Scale + Transformer + Pre-training).
+If you tell them, "We are using an LLM," you are defining the interface (Input = Text, Output = Text).
 
 
 
