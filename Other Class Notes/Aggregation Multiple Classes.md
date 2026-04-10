@@ -43,7 +43,9 @@ The classification of Foundational Models as Deep Learning is based on 3 specifi
 
 The **Large Language models (LLMs)** are nothing more than a **derivative of Foundational Models that interpret Language** (by splitting them into tokens and converting those into a number) to understand a prompt to reach a specific outcome. Kin to it, would be the Vision Foundation Models (for images) and the Audio Language Models (for Sound), that together would be enabled by a single **Large Multimodal Models (LMMs)**.
 
-Since it's a derivative type (of *text-to-text* sort), we can see that it's equation definition is simply a more limited version of the one for FM:
+$$LMM = Multi\text{-}modal \: Data \: (Text, \: Image, \: Audio) + Transformer \: (Architecture) + Next\text{-}Token/Patch \: Prediction$$
+
+Since both are derivative types (on the LLM case of the *text-to-text* sort), we can see that its equation definition is simply a more limited version of the one for FM:
 
 $$\text{LLM} = (\underbrace{\text{Text Data}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Next-Token Prediction}}_\text{Training Goal}$$
 
@@ -60,7 +62,6 @@ The model is not "taught" facts through the Next Token Prediction. Instead, it i
 It's in the Next Token Prediction (NTP) that lays the core distinction between Generative AI and the traditional type of AI, since the training can be used to either generate new combinations (generative) or to identify mistakes (discriminate).
 
 > Whilst both LLM and LMM are subsets of Foundational Models (FM), both are "brothers" to each other. One is specific to Text only, the other is more of a generalist. They are just a different type of trained Foundational Modules. 
-$$LLM = Text \: Data \: (Modality) + Transformer \: (Architecture) + NTP \: (Goal)$$
 
 ---
 
