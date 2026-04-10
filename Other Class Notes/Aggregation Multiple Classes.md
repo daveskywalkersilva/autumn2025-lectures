@@ -24,7 +24,7 @@ Below you can find a comparisson of both:
 | **Architectural Choice** | Can be many types (CNNs, RNNs, LSTMs). | Almost exclusively **Transformers** (a specific DL architecture). |
 | **Reusability** | Low. A hard-hat detector can't suddenly write a poem. | **High.** One model (GPT-4) can write code, summarize text, and act as a logic engine. |
 
-Although different, the classification of GenAI and LLMs (both based on Foundational Models) as Deep Learning is based on 3 specific technical characteristics:
+Although different, the classification of LLMs as Deep Learning is based on 3 specific technical characteristics:
 
 #### **1. Neural Network Architecture**
 Deep Learning is defined by the use of **artificial neural networks** with many layers (hence "deep"). 
