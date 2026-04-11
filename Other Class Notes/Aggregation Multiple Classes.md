@@ -81,9 +81,9 @@ Because of these differences, notice that **Generative AI is any type of AI (inc
 ---
 
 ### **V. Foudational Model vs Generative AI**
-On the same note as before, It's important to highlight that these aren't the same thing. Foundation Model refers to the architecture of the model (Infrastructure), while Generative AI refers to the capability of that model to generate inexisting content (App). 
+On the same note as the last 2 chapters, It's important to highlight that these aren't the same thing. Foundation Model refers to the **architecture of the model** (Infrastructure), while Generative AI refers to the **capability of that model** to generate inexisting content (App). 
 
-To better translate this, on Azure terms, is the same as comparing the Virtual Machine (that hosts applications) to a Web App (that is the product of being hosted on a VM):
+To better translate this, on Azure terms, is the same as comparing the Virtual Machine (that hosts applications) to the Web App (that is the product of being hosted on a VM, so basically a VM finetuned to run an app only). Its is a byproduct of the first persay and could be hosted on a Container instead (in this instance, an ML model):
 
 | Feature | Foundation Model | Generative AI |
 | :--- | :--- | :--- |
