@@ -16,7 +16,7 @@ The AI technology is best understood as a series of nested layers, with each sub
 ### **II. The Foundation Model (The "Generalist" DL)**
 From the Deep Learning Intelligence approach - usage of Neural networks - came the concept of Foundational Model, which **shares the same algorithm**, but with an **increased neural depth**, a much **bigger data pool** and more **general knowledge** goal, leading to be defined as a massive Deep Learning model that has finished its "General Education" (pre-training). 
 
-$$FM = Large\text{-}Scale \: Data + Transformer \: (Architecture) + Self\text{-}Supervised \: Learning \: (like \: NTP)$$
+$$\text{FM} = (\underbrace{\text{Large-Scale Data}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Self-Supervised (Like NTP)}}_\text{Training Goal}$$
 
 As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (called "*finetunning*").
 Below you can find a comparisson of both a traditional DL with the FM:
@@ -43,7 +43,7 @@ The classification of Foundational Models as Deep Learning is based on 3 specifi
 
 The **Large Language models (LLMs)** are nothing more than a **derivative of Foundational Models that interpret Language** (by splitting them into tokens and converting those into a number) to understand a prompt to reach a specific outcome. Kin to it, would be the Vision Foundation Models (for images) and the Audio Language Models (for Sound), that together would be enabled by a single **Large Multimodal Models (LMMs)**.
 
-$$LMM = Multi\text{-}modal \: Data \: (Text, \: Image, \: Audio) + Transformer \: (Architecture) + Next\text{-}Token/Patch \: Prediction$$
+$$\text{LMM} = (\underbrace{\text{Multi-Modal Data (Text, Image, Audio)}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Next-Token Prediction}}_\text{Training Goal}$$
 
 Since both are derivative types (on the LLM case of the *text-to-text* sort), we can see that its equation definition is simply a more limited version of the one for FM:
 
