@@ -1,12 +1,12 @@
 ### **I. The Hierarchy of Intelligence**
 The AI technology is best understood as a series of nested layers, with each subsequent field being a specialized subset of the previous one. Currently, we have 3 main categories, mainly:
 
-1.  **Artificial Intelligence (AI):** The broadest field. Its goal is to simulate human intelligence—specifically the ability to **learn, infer, and reason**—using a computer [[01:31](http://www.youtube.com/watch?v=qYNweeDHiyU&t=91)].
+1.  **Artificial Intelligence (AI):** The broadest field. Its goal is to simulate human intelligence — specifically the ability to **learn, infer and reason** — using a computer [[01:31](http://www.youtube.com/watch?v=qYNweeDHiyU&t=91)].
     * **Logical Goal:** To match or exceed human cognitive functions.
     * **Setbacks:** These were rigid and only as smart as the rules a human wrote for them.
-2.  **Machine Learning (ML):** A subset of AI where the machine "learns" from patterns in data without being explicitly programmed for a specific task [[02:54](http://www.youtube.com/watch?v=qYNweeDHiyU&t=174)].
+2.  **Machine Learning (ML):** A subset of AI where the machine "learns" from patterns in data, without being explicitly programmed for a specific task [[02:54](http://www.youtube.com/watch?v=qYNweeDHiyU&t=174)].
     * **Logical Goal:** Discovering hidden patterns and making predictions.
-    * **Setbacks :** Highly dependent on training data and not able to process unusual outcomes (hence being used to detect odd behaviour instead).
+    * **Setbacks :** Highly dependent on training data and not able to process unusual outcomes (hence being known for anomaly detection and classification).
 3.  **Deep Learning (DL):** A subset of ML that uses **multi-layered neural networks** to mimic the human brain’s structure to process complex data [[04:54](http://www.youtube.com/watch?v=qYNweeDHiyU&t=294)].
     * **Logical Goal:** Mimic the brain’s "unpredictable" yet highly effective processing power.
     * **Setbacks:** The black box logic, because there are so many layers, it is often difficult to decompose or explain exactly *why* a model reached a specific result.
@@ -14,12 +14,12 @@ The AI technology is best understood as a series of nested layers, with each sub
 ---
 
 ### **II. The Foundation Model (The "Generalist" DL)**
-From the Deep Learning Intelligence approach - usage of Neural networks - came the concept of Foundational Model, which **shares the same algorithm**, but with an **increased neural depth**, a much **bigger data pool** and more **general knowledge** goal, leading to be defined as a massive Deep Learning model that has finished its "General Education" (pre-training). 
+From the Deep Learning Intelligence approach - usage of Neural networks - derived the concept of Foundational Model, which **shares the same Transformer algorithm**, but with an **increased neural depth**, a much **bigger training data pool** and a more **general knowledge** goal, leading to be defined as a massive Deep Learning algorithm that has finished its "General Education" (pre-training). 
 
 $$\text{FM} = (\underbrace{\text{Large-Scale Data}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Self-Supervised (Like NTP)}}_\text{Training Goal}$$
 
-As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (called "*finetunning*").
-Below you can find a comparisson of both a traditional DL with the FM:
+In summary, you can say that **a model is what an DL algorithm creates right after being trained with data** (what we call pre-trained). As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (process called "*finetunning*").
+Below you can find a comparisson of both a traditional trained DL and a FM, like LLM:
 
 | Feature | Traditional Deep Learning Model | Foundation Model (LLMs, etc.) |
 | :--- | :--- | :--- |
@@ -28,40 +28,40 @@ Below you can find a comparisson of both a traditional DL with the FM:
 | **Architectural Choice** | Can be many types (CNNs, RNNs, LSTMs). | Almost exclusively **Transformers** (a specific DL architecture). |
 | **Reusability** | **Low.** A hard-hat detector can't suddenly write a poem. | **High.** One model (GPT-4) can write code, summarize text, and act as a logic engine. |
 
-> Note: Self-Supervised Learning is when we grab the data and split it into training data and evaluation data. The goal is to train the model so it can predict the original data as the output.
+> Note: Self-Supervised Learning is when we grab the data and split it into training data and evaluation data. The goal is to train the model so it can predict the original data as the output. It's a type of supervised training.
 
-The classification of Foundational Models as Deep Learning is based on 3 specific technical characteristics:
+The classification of Foundational Models as Deep Learning Models, instead of a subset of DL for instance, is based on still sharing these 3 specific technical characteristics:
     1. Same **Neural Network Architecture:** (like **Transformer architecture**) with many layers (hence "deep"), with the only difference being the scale of it - modern LLMs (like GPT-4 or Llama 3) have hundreds of layers and billions of parameters. This massive "depth" is what allows them to understand complex linguistic nuances.
     2. Same **Feature Representation Learning:** where in traditional ML there would be the need of a human to define "features" (e.g., in a house price model, features might be "square footage" or "zip code") - something that in Deep Learning, models learn to extract features themselves from raw data
     3. Same **Training Paradigm:** meaning that FMs utilize the same core mathematical engines of Deep Learning in training - **Backpropagation** and **Gradient Descent**. They learn by calculating the "error" (loss) between their predicted next word and the actual word in the training text, then updating their internal weights across all layers to minimize that error.
 
-> A good closing remark is that **AI is the Simulation Layer**, **ML the Pattern Layer**, **DL the Neural Layer** and **GenAI the Creative Layer**.
+> If you tell a someone you are using a FM, you are describing the tier of technology (Scale + Transformer + Pre-training). If you however tell about using a LLM, you are defining the interface (Input = Text, Output = Text).
 
 ---
 
 ### **III. Foundation Models, Large Language Models and Generative AI**
-
-The **Large Language models (LLMs)** are nothing more than a **derivative of Foundational Models that interpret Language** (by splitting them into tokens and converting those into a number) to understand a prompt to reach a specific outcome. Kin to it, would be the Vision Foundation Models (for images) and the Audio Language Models (for Sound), that together would be enabled by a single **Large Multimodal Models (LMMs)**.
+The **Large Language models (LLMs)** are nothing more than a **subset of Foundational Models that interpret Language** (by splitting them into tokens and converting those into a number) to understand a prompt to reach a specific outcome. Kin to it, would be the Vision Foundation Models (for images) and the Audio Language Models (for Sound) that, together, would be enabled by a single **Large Multimodal Models (LMMs)**.
 
 $$\text{LMM} = (\underbrace{\text{Multi-Modal Data (Text, Image, Audio)}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Next-Token Prediction}}_\text{Training Goal}$$
 
-Since both are derivative types (on the LLM case of the *text-to-text* sort), we can see that its equation definition is simply a more limited version of the one for FM:
+Since both are subset types (on the LLM case of the *text-to-text* sort), we can see that its equation definition is simply a more limited yet paralel version of the one for FM:
 
 $$\text{LLM} = (\underbrace{\text{Text Data}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Next-Token Prediction}}_\text{Training Goal}$$
 
-Digging into it: similarly to how a database doesn't "understand" a string - it understands data types - the agnostic Foundation Model doesn't "read" and write text either, leading to the following components of the equation: 
+Digging more into the equation: similarly to how a database doesn't "understand" a string - it understands data types - the agnostic Foundation Model doesn't "read" and write text either, leading to the following components of the equation: 
 * **The Modality ("Text-to-Input") phase:** This is the **Tokenizer** function. It translates human language into numerical vectors (embeddings) that the Foundation Model can process to both read and write.
 * **The "Thinking/Understanding" phase:** This is the **Transformer** function. It uses its deep learning layers to calculate the relationship between those numbers across many layers.
-* **Next "Prediction" (NTP) phase:** An objective function that drives the entire learning process of an LLM. It is a form of Self-Supervised Learning where the data provides its own targets and prediction, instead of human labeled data input like in traditional DL.
+* **Next "Prediction" (NTP) phase:** An objective function that drives the entire learning process of an LLM. It is a form of **Self-Supervised Learning** where the data provides its own targets and prediction, instead of human labeled data input like in traditional DL.
   
 The model is not "taught" facts through the Next Token Prediction. Instead, it is given a massive corpus of text and asked millions of times: *"Given these $n$ tokens, what is the most statistically probable $(n+1)$ token?"*
+* **Original Data to pre-train from:** "The Azure Architect deployed a service."
 * **The Input:** "The Azure Architect deployed a..."
 * **The Target:** "...service."
 * **The Adjustment:** If the model guesses incorrectly, the **Deep Learning backpropagation** adjusts the internal weights to make the correct answer more likely next time.
 
-It's in the Next Token Prediction (NTP) that lays the core distinction between Generative AI and the traditional type of AI, since the training can be used to either generate new combinations (generative) or to identify mistakes (discriminate).
+It's in the Next Token Prediction (NTP) that lays the core distinction that makes an LLM Generative AI or the traditional type of AI, since the training can be used to either generate new combinations (generative) or to identify mistakes (discriminate).
 
-> Whilst both LLM and LMM are subsets of Foundational Models (FM), both are "brothers" to each other. One is specific to Text only, the other is more of a generalist. They are just a different type of trained Foundational Modules. 
+> Whilst both LLM and LMM are subsets of Foundational Models (FM), both are "brothers" to each other. One is specific to Text only, the other is more of a generalist. They are just a different types of Foundational Models. 
 
 ---
 
@@ -74,10 +74,9 @@ While all Foudational Models are Deep Learning Models, not all Deep Learning is 
 | **Logic** | Learns the **boundary** between data classes. | Learns the **probability distribution** of the data itself. |
 | **Output** | A label or a numerical value ($y$). | New data that looks like the training data ($\hat{x}$). |
 
-Because of these differences, notice that **Generative AI is any type of DL that generates new content**, meaning that **it's a category** and not as much of a subset of DL per say.
-Although, we can say that **LLMs are a subset of LMMs**.
+Because of these differences, notice that **Generative AI is any type of AI (including ML) that generates new content**, meaning that **it's a category** and not as much of a subset of DL per say - instances of these are the so called "Traditional Generative Models" of which the *Hidden Markov Models (HMM)*, *Gaussian Mixture Models (GMM)* and *Naive Bayes* are part of.
 
-> For this reason, any LMM that generates new content can be defined as a GenAI Model 
+> For this reason, any LMM that generates new content can be defined as a GenAI Model. 
 
 ---
 
