@@ -168,7 +168,7 @@ So while an **AI Workflow** is a set of "train tracks" designed by an architect,
 
 This means that an AI Agent can be defined as a **Generative Foundational Model** based system that is capable of completing a goal by breaking it down into a series of steps, calling external tools and evaluating its own progress, in an autonomous fashion using a thinking Loop:
 
-$$Agent = \underbrace{ \left[ (LLM + Modality) \times \text{NTP} \right] }_{\text{GenAI (Brain or Engine)}} + \underbrace{Planning}_{\text{Skills}} + \underbrace{Memory}_{\text{Context/RAG}} + \underbrace{Tools\ Use}_{\text{Action Layer}}$$
+$$Agent = \underbrace{ \left[ (LLM + Modality) \times \text{NTP} \right] }_{ GenAI (Brain or Engine) } + \underbrace{Planning}_{\text{Skills}} + \underbrace{Memory}_{\text{Context/RAG}} + \underbrace{Tools\ Use}_{\text{Action Layer}}$$
 
 We say **"Thinking" Loop:** because unlike a standard LLM that provides a single response by "running", an Agent follows a loop thinking process like the **ReAct (Reason + Act)** and **Plan-and-Execute** patterns:
 1. **Perceive:** The agent receives a goal or an observation from its last action.
