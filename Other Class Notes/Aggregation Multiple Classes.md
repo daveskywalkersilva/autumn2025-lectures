@@ -31,9 +31,9 @@ Below you can find a comparisson of both a traditional trained DL and a FM, like
 > Note: Self-Supervised Learning is when we grab the data and split it into training data and evaluation data. The goal is to train the model so it can predict the original data as the output. It's a type of supervised training.
 
 The classification of Foundational Models as Deep Learning Models, instead of a subset of DL for instance, is based on still sharing these 3 specific technical characteristics:
-    1. Same **Neural Network Architecture:** (like **Transformer architecture**) with many layers (hence "deep"), with the only difference being the scale of it - modern LLMs (like GPT-4 or Llama 3) have hundreds of layers and billions of parameters. This massive "depth" is what allows them to understand complex linguistic nuances.
-    2. Same **Feature Representation Learning:** where in traditional ML there would be the need of a human to define "features" (e.g., in a house price model, features might be "square footage" or "zip code") - something that in Deep Learning, models learn to extract features themselves from raw data
-    3. Same **Training Paradigm:** meaning that FMs utilize the same core mathematical engines of Deep Learning in training - **Backpropagation** and **Gradient Descent**. They learn by calculating the "error" (loss) between their predicted next word and the actual word in the training text, then updating their internal weights across all layers to minimize that error.
+1. Same **Neural Network Architecture:** (like **Transformer architecture**) with many layers (hence "deep"), with the only difference being the scale of it - modern LLMs (like GPT-4 or Llama 3) have hundreds of layers and billions of parameters. This massive "depth" is what allows them to understand complex linguistic nuances.
+2. Same **Feature Representation Learning:** where in traditional ML there would be the need of a human to define "features" (e.g., in a house price model, features might be "square footage" or "zip code") - something that in Deep Learning, models learn to extract features themselves from raw data
+3. Same **Training Paradigm:** meaning that FMs utilize the same core mathematical engines of Deep Learning in training - **Backpropagation** and **Gradient Descent**. They learn by calculating the "error" (loss) between their predicted next word and the actual word in the training text, then updating their internal weights across all layers to minimize that error.
 
 > If you tell a someone you are using a FM, you are describing the tier of technology (Scale + Transformer + Pre-training). If you however tell about using a LLM, you are defining the interface (Input = Text, Output = Text).
 
@@ -171,19 +171,20 @@ This means that an AI Agent can be defined as a **Generative Foundational Model*
 $$Agent = \underbrace{ \left[ (LLM + Modality) \times \text{NTP} \right] }_{\text{GenAI (Brain or Engine)}} + \underbrace{Planning}_{\text{Skills}} + \underbrace{Memory}_{\text{Context/RAG}} + \underbrace{Tools\ Use}_{\text{Action Layer}}$$
 
 We say **"Thinking" Loop:** because unlike a standard LLM that provides a single response by "running", an Agent follows a loop thinking process like the **ReAct (Reason + Act)** and **Plan-and-Execute** patterns:
-    1. **Perceive:** The agent receives a goal or an observation from its last action.
-    2. **Reason:** The LMM "thinks" about the current state (e.g. "I have the Excel links, but one is a dead 404 error.").
-    3. **Plan:** It updates its internal to-do list (e.g. "I will skip the dead link and try to find a mirror site on Google.").
-    4. **Act (Tool Use):** It invokes a tool (e.g., calling a Python script or a Search API).
-    5. **Observe:** It looks at the tool output (e.g. "Google found the mirror link.").
-    6. **Repeat:** The loop restarts until the goal is met.
+1. **Perceive:** The agent receives a goal or an observation from its last action.
+2. **Reason:** The LMM "thinks" about the current state (e.g. "I have the Excel links, but one is a dead 404 error.").
+3. **Plan:** It updates its internal to-do list (e.g. "I will skip the dead link and try to find a mirror site on Google.").
+4. **Act (Tool Use):** It invokes a tool (e.g., calling a Python script or a Search API).
+5. **Observe:** It looks at the tool output (e.g. "Google found the mirror link.").
+6. **Repeat:** The loop restarts until the goal is met.
 
 To better recognize an AI Agent, you can look for the following 4 Key characteristics:
-    * **Autonomy:** They can operate for long periods without human intervention.
-    * **Tool Fluency:** They don't just "chat"; they interact with SQL, Azure CLI, APIs, and even other agents.
-    * **Self-Correction (Reflection):** If a tool returns an error, the agent doesn't crash; it reads the error message and tries a different approach.
-    * **Dynamic Planning:** They can pivot their entire strategy if the environment changes (e.g., an API goes down).
+* **Autonomy:** They can operate for long periods without human intervention.
+* **Tool Fluency:** They don't just "chat"; they interact with SQL, Azure CLI, APIs, and even other agents.
+* **Self-Correction (Reflection):** If a tool returns an error, the agent doesn't crash; it reads the error message and tries a different approach.
+* **Dynamic Planning:** They can pivot their entire strategy if the environment changes (e.g., an API goes down).
 
+MORE
 ---
 
 
