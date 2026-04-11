@@ -18,7 +18,7 @@ From the Deep Learning Intelligence approach - usage of Neural networks - derive
 
 $$\text{FM} = (\underbrace{\text{Large-Scale Data}}_\text{Modality} + \underbrace{\text{Transformer Architecture}}_\text{Deep Learning}) \times \underbrace{\text{Self-Supervised (Like NTP)}}_\text{Training Goal}$$
 
-In summary, you can say that **a model is what an DL algorithm creates right after being trained with data** (what we call pre-trained). As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (process called "*finetunning*").
+In summary, you can say that **a model is what an DL algorithm creates right after being trained with data** (what we call "*pre-trained*"). As such, its a persistent, reusable asset that can be adapted to hundreds of different tasks (a process called "*finetunning*").
 Below you can find a comparisson of both a traditional trained DL and a FM, like LLM:
 
 | Feature | Traditional Deep Learning Model | Foundation Model (LLMs, etc.) |
@@ -166,11 +166,11 @@ Another set of differences are highlighted on the below table as well:
 ### **IX. The Birth of AI Agents**
 So while an **AI Workflow** is a set of "train tracks" designed by an architect, an **AI Agent** is the "autonomous vehicle" that decides which road to take to reach a destination. The "birth" of an agent occurs when we move the decision-making logic from the code/workflow into the LLM itself.
 
-This means that an AI Agent can be defined as a Foundational Model based system that is capable of completing a goal by breaking it down into a series of steps, calling external tools, and evaluating its own progress, in an autonomous fashion using a thinking Loop:
+This means that an AI Agent can be defined as a **Generative Foundational Model** based system that is capable of completing a goal by breaking it down into a series of steps, calling external tools and evaluating its own progress, in an autonomous fashion using a thinking Loop:
 
 $$Agent = \underbrace{ \left[ (LLM + Modality) \times \text{NTP} \right] }_{\text{GenAI (Brain or Engine)}} + \underbrace{Planning}_{\text{Skills}} + \underbrace{Memory}_{\text{Context/RAG}} + \underbrace{Tools\ Use}_{\text{Action Layer}}$$
 
-We say **"Thinking" Loop:** because unlike a standard LMM that provides a single response by "running", an Agent follows a loop thinking process like the **ReAct (Reason + Act)** and **Plan-and-Execute** pattern:
+We say **"Thinking" Loop:** because unlike a standard LLM that provides a single response by "running", an Agent follows a loop thinking process like the **ReAct (Reason + Act)** and **Plan-and-Execute** patterns:
     1. **Perceive:** The agent receives a goal or an observation from its last action.
     2. **Reason:** The LMM "thinks" about the current state (e.g. "I have the Excel links, but one is a dead 404 error.").
     3. **Plan:** It updates its internal to-do list (e.g. "I will skip the dead link and try to find a mirror site on Google.").
@@ -178,7 +178,15 @@ We say **"Thinking" Loop:** because unlike a standard LMM that provides a single
     5. **Observe:** It looks at the tool output (e.g. "Google found the mirror link.").
     6. **Repeat:** The loop restarts until the goal is met.
 
-In regards to the 
+To better recognize an AI Agent, you can look for the following 4 Key characteristics:
+    * **Autonomy:** They can operate for long periods without human intervention.
+    * **Tool Fluency:** They don't just "chat"; they interact with SQL, Azure CLI, APIs, and even other agents.
+    * **Self-Correction (Reflection):** If a tool returns an error, the agent doesn't crash; it reads the error message and tries a different approach.
+    * **Dynamic Planning:** They can pivot their entire strategy if the environment changes (e.g., an API goes down).
+
+---
+
+
 > "An Agent is a **Foundational Model** wrapped in a **Reasoning Loop** that leverages **Planning** and **Memory** to autonomously execute **Tools**."
 
 Let's save time for Skills and Tools on the next chapter.
