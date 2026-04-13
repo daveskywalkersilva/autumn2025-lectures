@@ -290,17 +290,18 @@ Due to the reasoning nature of Agents, as well as its required autonomy, a lot o
 #### **X. Agents Communication: MCP and API Tools**
 Talk also about API
 
-
-(After the introduction of Agents)
-### **Pratical Usage of Agents in a project: Tools and Skills**
-
-### **Multi-Agents Workflows and Mixture of Experts**
-
 Model Context Protocol (MCP)
 
 * MCP standardizes the interaction between large language models and external data sources, facilitating more efficient connections.
 * It allows LLMs to access various systems, such as databases or email servers, without needing custom integration for each application.
 * This standardized approach simplifies the development process and broadens the utility of AI models across different platforms.
+
+---
+
+(After the introduction of Agents)
+### **Pratical Usage of Agents in a project: Tools and Skills**
+
+### **Multi-Agents Workflows and Mixture of Experts**
 
 
 Mixture of Experts (MoE)
