@@ -278,6 +278,8 @@ This video provides a deep dive into the "Agent Skills" standard, explaining how
 ---
 
 ### **XII. Agents features (2/2): Tools**
+Another way found to save some 
+
 Due to the reasoning nature of Agents, as well as its required autonomy, a lot of thought was put into bypassing their "Brain" shortcomings by adding 2 features (aside from **RAG**): **Skills** and **tools**:
 
 * **Tools (External Integration):** These are the "peripheral devices" connectors for your agent. In Azure, these are typically **REST APIs**, **Python Functions**, **OpenAI Specs** or **Database Connections**. You provide the agent with a JSON definition of the tool, and the LLM decides when to "invoke" it. For instance, RAG systems and Model Context Protocol (MCP) also fall under this umbrella term.
