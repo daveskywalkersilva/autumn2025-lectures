@@ -247,22 +247,23 @@ Be careful to best pick the model that suits your needs, as LLMs and LMMs are op
 ---
 
 ### **XI. Agents features (1/2): Skills**
-Due to the high reasoning metadata created by Agents - as well as their autonomy guidance concerns - it was high important to reduce the the amount of tokens being used within the Window Context in the prompt.
+Due to the high reasoning metadata created by Agents, as well as some recurrent need to provide extensive guidance or context, it was highly important to reduce the the amount of tokens being used within the Window Context in the prompt to stop costs and hallucination.
 
-To solve it, developers then thought of keeping **markdown "documentation" files** regarding **private data**, **task-oriented guidance/requirements** (like policies and guardrails) and even reasoning metadata (less likely but possible) **in** the project to be findable and usable by the agent **if** he thinks is useful - the so called "**Skills**".
+To solve it, developers then thought of keeping **markdown "documentation" files** regarding **private data**, **task-oriented guidance/requirements** (like policies and guardrails) and even reasoning metadata (less likely but possible) **in** the project itself to be findable and usable by the agent **if** he thinks is useful - the so called "**Skills**".
 
-They comply with the following  
-* **Structured Metadata:** In frameworks like **Agent Skills** (used in tools like *Claude Code* or *Antigravity*), skills are defined in `SKILL.md` files. 
-* **Progressive Disclosure:** To save on "Compute Cost" (Tokens), skills allow agents to load only the specific documentation or logic needed for a task—like **Dynamic Library Loading** in OS architecture.
-* **The Blueprint:** A skill tells the agent *how* to use its tools. For example, an "Azure Deployment Skill" would contain the troubleshooting flows and best practices for ARM templates, rather than just the raw API.
+They allow the benefits like:
+* **Structured Metadata:** In frameworks like **Agent Skills** (used in tools like *Claude Code* or *Antigravity*), being defined in `SKILL.md` files. 
+* **Progressive Disclosure:** To save on "Compute Cost" (Tokens), mening that skills allow agents to load only the specific documentation or logic needed for a task — like **Dynamic Library Loading** in OS architecture - according to the info provided in Skill's name and description, keeping loading to the minimum.
+* **The Blueprint:** Where a skill tells the agent *how* to use its tools. For example, an "Azure Deployment Skill" would contain the troubleshooting flows and best practices for ARM templates, rather than just the raw API.
 
-To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home), but in summary, can be done by:
+To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home), but in summary, you can set one and use it by:
 1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[theme]".
-2. **Creating a SKILL.md file:** inside the folder, where it should have a Name, Description and the body - which is free text of explanations.
+2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
 3. **Add other folders:** if needed, with related content, like code, documentation or templates, following an hierarchical order.
-4. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up.
+4. **Check It has been created:** By asking you agent, like in VSCode, he he can see the custom skills you just created, and wait for the output list.
+5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on.
 
-Be careful to 
+Be careful to make sure that the skills are loaded - often times they are cached and not frequently fetched.
 
 ---
 
@@ -271,7 +272,7 @@ This video provides a deep dive into the "Agent Skills" standard, explaining how
 
 
 * **Tools (External Integration):** These are the "peripheral devices" connectors for your agent. In Azure, these are typically **REST APIs**, **Python Functions**, **OpenAI Specs** or **Database Connections**. You provide the agent with a JSON definition of the tool, and the LLM decides when to "invoke" it. For instance, RAG systems and Model Context Protocol (MCP) also fall under this umbrella term.
-* **Skills (Internal Logic):** These are specialized prompts for fine-tuned behaviors or content, often saved in a folder in markdown format. For example, an agent might have a "Cloud Security Skill" that forces it to always run a `Policy Check` before deploying a resource, or have a **domaind-specific knowledge**
+
 
 
 ---
