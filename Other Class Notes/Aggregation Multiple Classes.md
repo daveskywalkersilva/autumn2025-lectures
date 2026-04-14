@@ -257,13 +257,16 @@ They allow the benefits like:
 * **The Blueprint:** Where a skill tells the agent *how* to use its tools. For example, an "Azure Deployment Skill" would contain the troubleshooting flows and best practices for ARM templates, rather than just the raw API.
 
 To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home), but in summary, you can set one and use it by:
-1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[theme]".
+1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[concept-identifier]".
 2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
 3. **Add other folders:** if needed, with related content, like code, documentation or templates, following an hierarchical order.
 4. **Check It has been created:** By asking you agent, like in VSCode, he he can see the custom skills you just created, and wait for the output list.
 5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on.
 
 Be careful to make sure that the skills are loaded - often times they are cached and not frequently fetched, so you might need to request it to be fecthed again.
+
+> NOTE
+> You can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
 
 ---
 
@@ -278,7 +281,7 @@ This video provides a deep dive into the "Agent Skills" standard, explaining how
 ---
 
 ### **XII. Agents features (2/2): Tools**
-Another way found to save some 
+Another way found to save some context window
 
 Due to the reasoning nature of Agents, as well as its required autonomy, a lot of thought was put into bypassing their "Brain" shortcomings by adding 2 features (aside from **RAG**): **Skills** and **tools**:
 
