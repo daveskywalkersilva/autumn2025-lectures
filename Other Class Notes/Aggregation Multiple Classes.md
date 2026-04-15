@@ -259,7 +259,7 @@ They allow the benefits like:
 To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home), but in summary, you can set one and use it by:
 1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[concept-identifier]".
 2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
-3. **Add other folders:** if needed, with related content, like code, documentation or templates, following an hierarchical order.
+3. **Add other folders:** if needed, with related content like code, documentation or templates, following an hierarchical order. You can then refer to those like "*To check template details go to './extra-details.md'*".
 4. **Check It has been created:** By asking you agent, like in VSCode, he he can see the custom skills you just created, and wait for the output list.
 5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on.
 
@@ -269,6 +269,10 @@ Be careful to make sure that the skills are loaded - often times they are cached
 > You can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
 
 ---
+
+### 
+
+### **Classic RAG vs Knowledge RAG vs RAG**
 
 [Intro to Agent Skills](https://www.youtube.com/watch?v=4mnP1lRdUm8)
 This video provides a deep dive into the "Agent Skills" standard, explaining how modular, on-demand knowledge can be injected into an agent's context to solve complex development tasks without overwhelming the token limit.
@@ -288,10 +292,51 @@ Due to the reasoning nature of Agents, as well as its required autonomy, a lot o
 * **Tools (External Integration):** These are the "peripheral devices" connectors for your agent. In Azure, these are typically **REST APIs**, **Python Functions**, **OpenAI Specs** or **Database Connections**. You provide the agent with a JSON definition of the tool, and the LLM decides when to "invoke" it. For instance, RAG systems and Model Context Protocol (MCP) also fall under this umbrella term.
 * **Skills (Internal Logic):** These are specialized prompts for fine-tuned behaviors or content, often saved in a folder in markdown format. For example, an agent might have a "Cloud Security Skill" that forces it to always run a `Policy Check` before deploying a resource, or have a **domaind-specific knowledge**
 
+
+
 ---
 
-#### **X. Agents Communication: MCP and API Tools**
-Talk also about API
+#### **X. Tools Communication: MCP and APIs**
+Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask to access and query Google Calendar each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them up to add.
+
+Looking to avoid duplicating efforts and speed integration, the **MCP** protocol was created.
+
+The **Model Context Protocol (MCP)** is merely an open-source **standardized** protocol that enables seamless integration between Foundational Models (FM) applications and external data sources, similar to how APIs work for *Web Services*. 
+
+MCP operates on a **client-server architecture** within a larger **host ecosystem**, making the three-tier model:
+1. **MCP Host**: The AI application (Claude Desktop, VS Code, ChatGPT, etc.) that coordinates all connections
+   - Manages multiple MCP clients simultaneously
+   - Routes tool calls, resource requests, and prompts to appropriate servers
+   - Aggregates capabilities across all connected servers
+2. **MCP Client**: A component within the host that maintains a single dedicated connection to an MCP server
+   - Handles lifecycle management (initialization, capability negotiation)
+   - Translates host requests into MCP protocol messages
+   - Receives responses and translates them back to host format
+3. **MCP Server**: A program that exposes capabilities (tools, resources, prompts) to connected clients
+   - Can run locally (filesystem, SQLite) or remotely (SaaS APIs, cloud services)
+   - Defined by the capabilities it declares during initialization
+   - Proactively notifies clients when capabilities change
+
+To the structured, typed data format that describes capabilities and resources to be accessed by MCP we call primitives. Currently there are 2 types:
+
+> NOTE:
+> **For Azure Architects**: Use MCP to build specialized servers for each concern domain (Infrastructure, Security, Compliance, Cost). The orchestrator routes decisions through these specialized agents in parallel, achieving better outcomes than a single monolithic agent. Cost increases with token multiplexing, but quality improvement justifies it for high-stakes decisions.
+
+
+### **Comparison between MCP, API, Webhooks and SDK**
+
+| Aspect | MCP (Standardized) | RESTful APIs | Webhooks | Direct SDK Integration |
+|--------|-------------------|-----------|----------|------------------------|
+| **Standardization** | Unified protocol across all servers | Varies by provider | Inconsistent formats | No standard interface |
+| **Discovery** | Dynamic capability listing | Manual documentation | Manual implementation | Implicit in SDK |
+| **Bidirectionality** | Full request-response + notifications | Request-response primarily | Server-initiated only | Tightly coupled |
+| **Authentication** | Transport-layer agnostic | HTTP header/URL | Bearer token/signing | API keys in code |
+| **Performance** | Connection pooling, persistent clients | Stateless HTTP | Event-driven overhead | Direct memory calls |
+| **Ease for Developers** | Learn once, apply everywhere | Per-API documentation | Framework-specific | High coupling |
+
+allowing to avoid  tools, and APIs.
+
+It is exclusively about standardizing the connection protocol between AI applications and external systems.
 
 Model Context Protocol (MCP)
 
