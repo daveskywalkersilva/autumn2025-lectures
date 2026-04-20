@@ -267,8 +267,8 @@ Be careful to make sure that the skills are loaded - often times they are cached
 
 You can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
 
-> NOTE
-> You can see Skills as more flexible types of context retrieval - like a RAG approach. However, instead of getting files from a database, it just goes over 
+> NOTE:
+> You can see Skills as more flexible types of context retrieval - like a RAG approach. However, instead of getting files from a database, it just goes over the markdown files
 
 ---
 
