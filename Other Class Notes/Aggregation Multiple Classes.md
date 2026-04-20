@@ -310,8 +310,7 @@ A tools schema declares the **tool's interface using a standardized format** (ty
 }
 ```
 
-Then, on the same `[project-root]/tools/` path, you must then set an **executable file** with the **same name** that can be ran according to the tools interface.
-**Example: Azure Resource Lookup Tool Schema**
+Then, on the same `[project-root]/tools/` path, you must set an **executable file** with the **same name** that can be ran according to the tools interface, like you can see on the powershell script below that takes the same parameters as the schema.
 ```powershell
 param(
     [string]$subscription_id,
@@ -337,10 +336,10 @@ try {
         execution_time_ms = ([datetime]::UtcNow - $startTime).TotalMilliseconds
     } | ConvertTo-Json
 }
-#...
+catch(){}
 ```
 
-Last but not least, it will be important to **"register" the tool created** in **one of three options**. Either in `./tools/README.md` (like below):
+Last but not least, it is important to **"register" the tool created** in **one of following three options**. Either in `./tools/README.md` (like below):
 ```markdown
 # Tools Registry
 
