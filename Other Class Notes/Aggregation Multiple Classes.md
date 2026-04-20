@@ -393,7 +393,13 @@ Or the root path `./agent-config.json`, in case you want to register also Skills
     }
   ],
   "skills_path": "./.agents/skills",
-  "rag_enabled": true
+  "rag_enabled": true,
+  "mcpServers": {
+    "azure-vm": {
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "./tools/start_vm.ps1"]
+    }
+  }
 }
 ```
 
