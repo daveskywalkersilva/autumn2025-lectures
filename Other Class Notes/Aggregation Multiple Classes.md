@@ -336,7 +336,7 @@ try {
         execution_time_ms = ([datetime]::UtcNow - $startTime).TotalMilliseconds
     } | ConvertTo-Json
 }
-catch(){}
+catch{}
 ```
 
 Last but not least, it is important to **"register" the tool created** in **one of following three options**. Either in `./tools/README.md` (like below):
@@ -415,9 +415,9 @@ project-root/
 └── ...
 ```
 
-Notice that without registration, it would require to point to the target files and provide context on the prompt in each usage. But this way, Agents will know **which tools are available** before deciding to use them. Currently, there are two primary mechanisms for tool discovery: **static** and **dynamic**.
+Notice that without registration, it would require to point to the target files and provide context on the prompt in each session. But this way, Agents will know **which tools are available** before deciding to use them. Currently, there are two primary mechanisms for tool discovery: **static** and **dynamic**.
 
-In static discovery, tools are **declared upfront** (typically in the **system prompt** or a **tool registry**) and remain constant during execution. The advantages are that its easier to version and to use, althought it comes at the cost of poor scalability and context bloat. An instance would be the prompt below:
+In **static discovery**, tools are **declared upfront** (typically in the **system prompt** or a **tool registry**) and remain constant during execution. The advantages are that its easier to version and to use, althought it comes at the cost of poor scalability and context bloat. An instance would be the prompt below:
 ```text
 Available tools:
 1. list_azure_resources
@@ -428,7 +428,7 @@ Available tools:
 ...
 ```
 
-In dynamic discovery, tools are **discovered at runtime** based on agent capabilities, permissions, or context. The good part is that **it allows to only fill the context window with the needed tools** and that it scales better for a larger tool ecosystem since he himself **generates the required tools scripts and definitions**. However, it also means that is more complex to implement and requires some **runtime overhead and prediction power** since he will generate the tools himself. A good example of the difference of registration complexity can be found below for the same "start vm" scenario:
+In **dynamic discovery**, tools are **discovered at runtime** based on agent capabilities, permissions, or context. The good part is that **it allows to only fill the context window with the needed tools** and that it scales better for a larger tool ecosystem since he himself **generates the required tools scripts and definitions**. However, it also means that is more complex to implement and requires some **runtime overhead and prediction power** since he will generate the tools himself. A good example of the difference of registration complexity can be found below for the same "start vm" scenario:
 ```json
 {
     "dynamic_tools": {
@@ -458,9 +458,7 @@ In dynamic discovery, tools are **discovered at runtime** based on agent capabil
 }
 ```
 
-Regardless of which discovery method is chosen, you can then use either **explicit statements to call the tool** or just **imply its usage** like:
-* "*Start the production VM (vm-prod-01) in resource group prod-rg in subscription 12345678-1234-1234-1234-123456789012 in azure*"
-* "*Please user the tool start_vm() to start vm-prod-01 (it's in prod-rg). Don't wait for startup, just trigger it.*"
+Regardless of which discovery method is chosen, you can then use either **explicit statements** to call the tool or just **imply its usage** like: "*Start the production VM (vm-prod-01) in resource group prod-rg in subscription 12345678-1234-1234-1234-123456789012 in azure*" or "*Please user the tool start_vm() to start vm-prod-01 (it's in prod-rg). Don't wait for startup, just trigger it.*"
 
 > NOTE:
 > **Token Burn Risk:** If an agent gets stuck in an error loop (retry, fail, retry, fail...), it can consume hundreds of dollars of LLM calls in minutes. Always set a **retry limit** and an **escalation strategy** (fail gracefully, notify user, roll back).
