@@ -202,7 +202,7 @@ Another good overview of its components can also be found on the N8N agent compo
                                                    |          |
                                          (2 Items) |          | (1 Item)
                                                    |          |
-                                       +-----------v----------v----------+
+                                       +-----------v----------v---------+
                                        |      MEMORY    |      TOOL     |
                                        |     (State)    |   (Action)    |
                                        \----------------+---------------/
