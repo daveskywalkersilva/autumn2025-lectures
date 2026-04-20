@@ -1,6 +1,6 @@
 ---
-Name: Hello There!
-Description: To be used when someone types "Hello there".
+name: hello-there
+description: To be used when someone types "Hello there".
 ---
 
 # Hello there!

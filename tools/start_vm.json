@@ -1,0 +1,30 @@
+{
+  "name": "start_azure_vm",
+  "description": "Start a stopped Azure Virtual Machine using PowerShell",
+  "category": "Infrastructure Control",
+  "severity": "High",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "subscription_id": {
+        "type": "string",
+        "description": "The Azure subscription ID (e.g., '12345678-1234-1234-1234-123456789012')",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+      },
+      "resource_group": {
+        "type": "string",
+        "description": "The Azure resource group name (e.g., 'myResourceGroup')"
+      },
+      "vm_name": {
+        "type": "string",
+        "description": "The name of the VM to start (e.g., 'myVM')"
+      },
+      "wait_for_completion": {
+        "type": "boolean",
+        "description": "Wait for the VM to fully start before returning (default: true)",
+        "default": true
+      }
+    },
+    "required": ["subscription_id", "resource_group", "vm_name"]
+  }
+}

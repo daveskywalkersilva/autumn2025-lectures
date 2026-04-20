@@ -247,9 +247,9 @@ Be careful to best pick the model that suits your needs, as LLMs and LMMs are op
 ---
 
 ### **XI. Agents features (1/2): Skills**
-Due to the high reasoning metadata created by Agents, as well as some recurrent need to provide extensive guidance or context, it was highly important to reduce the the amount of tokens being used within the Window Context in the prompt to stop costs and hallucination.
+Due to the high reasoning metadata created by Agents, as well as some recurrent need to provide extensive guidance or context, it was highly important to effectively limit the amount of tokens being used within the prompt's Context Window to stop costs and hallucination.
 
-To solve it, developers then thought of keeping **markdown "documentation" files** regarding **private data**, **task-oriented guidance/requirements** (like policies and guardrails) and even reasoning metadata (less likely but possible) **in** the project itself to be findable and usable by the agent **if** he thinks is useful - the so called "**Skills**".
+To solve it, developers then thought of keeping **markdown "documentation" files** regarding **private data**, **domaind-specific knowledge**, **task-oriented guidance/requirements** (like policies and guardrails) and even reasoning metadata (less likely but possible) **in** the project itself to be findable and usable by the agent **if** he thinks is useful - the so called "**Skills**".
 
 They allow the benefits like:
 * **Structured Metadata:** In frameworks like **Agent Skills** (used in tools like *Claude Code* or *Antigravity*), being defined in `SKILL.md` files. 
@@ -259,44 +259,240 @@ They allow the benefits like:
 To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home), but in summary, you can set one and use it by:
 1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[concept-identifier]".
 2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
-3. **Add other folders:** if needed, with related content like code, documentation or templates, following an hierarchical order. You can then refer to those like "*To check template details go to './extra-details.md'*".
-4. **Check It has been created:** By asking you agent, like in VSCode, he he can see the custom skills you just created, and wait for the output list.
-5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on.
+3. **Add other folders and files:** if needed, with related content like code, documentation or templates, following an hierarchical order. You can then refer to those like "*To check template details go to './extra-details.md'*".
+4. **Check if has been created:** by asking you agent, like in VSCode, to see the custom skills you just created, and wait for the output list.
+5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on, or set it on teh description to be used when a key word is found.
 
 Be careful to make sure that the skills are loaded - often times they are cached and not frequently fetched, so you might need to request it to be fecthed again.
 
+You can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
+
 > NOTE
-> You can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
-
----
-
-### 
-
-### **Classic RAG vs Knowledge RAG vs RAG**
-
-[Intro to Agent Skills](https://www.youtube.com/watch?v=4mnP1lRdUm8)
-This video provides a deep dive into the "Agent Skills" standard, explaining how modular, on-demand knowledge can be injected into an agent's context to solve complex development tasks without overwhelming the token limit.
-
-
-* **Tools (External Integration):** These are the "peripheral devices" connectors for your agent. In Azure, these are typically **REST APIs**, **Python Functions**, **OpenAI Specs** or **Database Connections**. You provide the agent with a JSON definition of the tool, and the LLM decides when to "invoke" it. For instance, RAG systems and Model Context Protocol (MCP) also fall under this umbrella term.
-
-
+> You can see Skills as more flexible types of context retrieval - like a RAG approach. However, instead of getting files from a database, it just goes over 
 
 ---
 
 ### **XII. Agents features (2/2): Tools**
-Another way found to save some context window
+Still, if the goal is to fetch currently available and often updated data from external sources, a Skill won't do as it is not suitable for very dynamic data. Hence, the need to allow for Agents to fetch data, comunicate and make actions in third party systems appeared, and the concept of **tools** was created. 
 
-Due to the reasoning nature of Agents, as well as its required autonomy, a lot of thought was put into bypassing their "Brain" shortcomings by adding 2 features (aside from **RAG**): **Skills** and **tools**:
+Tools are nothing more than **"peripheral devices" for your agent**. Without them, the agent would be like an isolated VM with no NIC whose action and scope is limited to itself and to its training. However they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding, and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
 
-* **Tools (External Integration):** These are the "peripheral devices" connectors for your agent. In Azure, these are typically **REST APIs**, **Python Functions**, **OpenAI Specs** or **Database Connections**. You provide the agent with a JSON definition of the tool, and the LLM decides when to "invoke" it. For instance, RAG systems and Model Context Protocol (MCP) also fall under this umbrella term.
-* **Skills (Internal Logic):** These are specialized prompts for fine-tuned behaviors or content, often saved in a folder in markdown format. For example, an agent might have a "Cloud Security Skill" that forces it to always run a `Policy Check` before deploying a resource, or have a **domaind-specific knowledge**
+Every tool has 3 essential components: 
+* **Registration**: So that Agent can know what to use the tool for.
+* **Schema**: JSON Schema formatted file with type validation, enums, patterns, descriptions, allowing to know how to use the tool.
+* **Executable**: in a file like python, Javascript, or other that the agent should be able to run. In it, it should address:
+    * All error paths (timeout, permission, validation)
+    * Return **consistent structure** (always include `status` field)
+    * Include **metadata** (execution_time_ms, timestamps) for debugging purposes
+    * Provide **actionable errors messages** (what went wrong + what the agent should do)
+    * Set **retry hints** (retry_after_seconds, required_role)
 
+A tools schema declares the **tool's interface using a standardized format** (typically JSON Schema) although it only gets validated during invocation time. Here is a template:
+```json
+{
+    "name": "tool_name",
+    "description": "Clear purpose",
+    "parameters": {
+        "type": "object",
+        "properties": { 
+            "subscription_id": {
+                "type": "string",
+                "description": "The Azure subscription ID"
+            },
+            "resource_group": {
+                "type": "string",
+                "description": "The resource group name"
+            },
+            /* define other param */ 
+        },
+        "required": ["subscription_id", /* essential params here */ ]
+    }
+}
+```
 
+Then, on the same `[project-root]/tools/` path, you must then set an **executable file** with the **same name** that can be ran according to the tools interface.
+**Example: Azure Resource Lookup Tool Schema**
+```powershell
+param(
+    [string]$subscription_id,
+    [string]$resource_group,
+)
+
+$startTime = Get-Date
+
+try {
+    # Step 1: Authenticate using managed identity (production) or stored credentials
+    Write-Host "Authenticating to Azure..."
+    Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
+    
+    # ...
+
+    return @{
+        status = "success"
+        vm_name = $vm_name
+        resource_group = $resource_group
+        current_state = "starting"
+        details = "Start command submitted asynchronously"
+        job_id = $startJob.Id
+        execution_time_ms = ([datetime]::UtcNow - $startTime).TotalMilliseconds
+    } | ConvertTo-Json
+}
+#...
+```
+
+Last but not least, it will be important to **"register" the tool created** in **one of three options**. Either in `./tools/README.md` (like below):
+```markdown
+# Tools Registry
+
+## start_azure_vm
+- **Category:** Infrastructure Control
+- **Severity:** High
+- **Parameters:** subscription_id, resource_group, vm_name, wait_for_completion
+- **Preconditions:** Managed identity has Virtual Machine Contributor role
+
+## check_azure_quotas
+- **Schema:** check_quotas.json
+- **Implementation:** check_quotas.ps1
+- **Description:** Check Azure subscription quotas before deployment
+```
+
+Or in the `./tools/config.json` path like so:
+```json
+{
+    "tools": [
+        {
+            "id": "start_azure_vm",
+            "schema_path": "./start_vm.json",
+            "implementation_path": "./start_vm.ps1",
+            "skill_reference": "../.agents/skills/azure-vm-control/SKILL.md"
+        },
+        {
+            "id": "check_azure_quotas",
+            "schema_path": "./check_quotas.json",
+            "implementation_path": "./check_quotas.ps1",
+            "type": "powershell"
+        }
+    ]
+}
+```
+
+Or the root path `./agent-config.json`, in case you want to register also Skills;
+```json
+{
+  "tools": [
+    {
+      "name": "start_azure_vm",
+      "schema": "./tools/start_vm.json",
+      "implementation": "./tools/start_vm.ps1",
+      "type": "powershell"
+    },
+    {
+      "name": "check_azure_quotas",
+      "schema": "./tools/check_quotas.json",
+      "implementation": "./tools/check_quotas.ps1",
+      "type": "powershell"
+    }
+  ],
+  "skills_path": "./.agents/skills",
+  "rag_enabled": true
+}
+```
+
+Leading to the following project organization:
+```
+project-root/
+├── .agents/
+│   └── skills/
+│       └── azure-vm-control/
+│           └── SKILL.md
+├── tools/
+│   ├── README.md               ← Documents all available tools
+│   ├── config.json             ← Tool registry (what you created)
+│   ├── start_vm.json
+│   ├── start_vm.ps1
+│   ├── check_quotas.json
+│   └── check_quotas.ps1
+├── agent-config.json           ← Main config (references .agents/ and tools/)
+└── ...
+```
+
+Notice that without registration, it would require to point to the target files and provide context on the prompt in each usage. But this way, Agents will know **which tools are available** before deciding to use them. Currently, there are two primary mechanisms for tool discovery: **static** and **dynamic**.
+
+In static discovery, tools are **declared upfront** (typically in the **system prompt** or a **tool registry**) and remain constant during execution. The advantages are that its easier to version and to use, althought it comes at the cost of poor scalability and context bloat. An instance would be the prompt below:
+```text
+Available tools:
+1. list_azure_resources
+2. query_cosmos_db
+3. invoke_logic_app
+4. get_keyvault_secret
+5. deploy_bicep_template
+...
+```
+
+In dynamic discovery, tools are **discovered at runtime** based on agent capabilities, permissions, or context. The good part is that **it allows to only fill the context window with the needed tools** and that it scales better for a larger tool ecosystem since he himself **generates the required tools scripts and definitions**. However, it also means that is more complex to implement and requires some **runtime overhead and prediction power** since he will generate the tools himself. A good example of the difference of registration complexity can be found below for the same "start vm" scenario:
+```json
+{
+    "dynamic_tools": {
+        "start_vm_template": {
+            "type": "parametric",
+            "base_schema": "./templates/start_vm_template.json",
+            "implementation_factory": "./tools/factories/vm_factory.py",
+            "supported_providers": ["azure", "aws", "gcp"],
+
+            "discovery_mechanism": "api",
+            "discovery_endpoint": "http://localhost:8080/tools/discover",
+            
+            "generate_schema_at": "runtime"
+        }
+    },
+    "tool_factories": {
+        "vm_control": {
+            "factory_function": "create_vm_control_tool",
+            "factory_module": "./tools/factories/vm_factory.py",
+            "parameters": {
+                "cloud_provider": "required",
+                "region": "optional",
+                "auth_method": "optional"
+            }
+        }
+    }
+}
+```
+
+Regardless of which discovery method is chosen, you can then use either **explicit statements to call the tool** or just **imply its usage** like:
+* "*Start the production VM (vm-prod-01) in resource group prod-rg in subscription 12345678-1234-1234-1234-123456789012 in azure*"
+* "*Please user the tool start_vm() to start vm-prod-01 (it's in prod-rg). Don't wait for startup, just trigger it.*"
+
+> NOTE:
+> **Token Burn Risk:** If an agent gets stuck in an error loop (retry, fail, retry, fail...), it can consume hundreds of dollars of LLM calls in minutes. Always set a **retry limit** and an **escalation strategy** (fail gracefully, notify user, roll back).
+
+Since the tools are very powerful, but sensitive things, it's **crucial** to keep in mind their **best practices as to avoid necessary costs**, since an issue will also be multiplied by tens in proportion to the productivity:
+1. **Fail Fast, Fail Loud**
+   - Return errors immediately with detailed context
+   - Never silently degrade (e.g., "couldn't delete resource, skipping" is dangerous)
+2. **Explicit State Transitions**
+   - Tools should declare their preconditions, postconditions, and state changes
+   - Example: `deploy_bicep` should declare "This tool modifies cloud state; rollback may not be possible"
+3. **Idempotency Where Possible**
+   - Calling the tool twice with the same parameters should produce the same result
+   - Example: Create-or-update pattern (tool checks if resource exists; creates only if absent)
+4. **Observable Execution**
+   - Return execution metadata: duration, resource IDs, decision points
+   - Allows agent to reason about tool behavior: "This deployment took 5 minutes; next time request more timeout"
+5. **Security by Design**
+   - Never embed secrets in tool parameters
+   - Always use managed identities or Key Vault
+   - Validate input rigorously; never trust LLM-provided parameters alone
+6. **Cost Transparency**
+   - Tool output should include cost implications (tokens used, API calls, cloud charges)
+   - Enables agent to make informed decisions: "This query will cost $50; is it worth it?"
+
+> NOTE:
+> **The Tool Paradox:** As tools become more powerful, agent failures become more costly. A reasoning error that calls the wrong tool can delete a production database. Always design tools with safeguards, dry-run modes, and approval workflows for high-risk operations.
 
 ---
 
-#### **X. Tools Communication: MCP and APIs**
+#### **XIII. Tools Communication: MCP and APIs**
 Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask to access and query Google Calendar each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them up to add.
 
 Looking to avoid duplicating efforts and speed integration, the **MCP** protocol was created.
@@ -343,6 +539,33 @@ Model Context Protocol (MCP)
 * MCP standardizes the interaction between large language models and external data sources, facilitating more efficient connections.
 * It allows LLMs to access various systems, such as databases or email servers, without needing custom integration for each application.
 * This standardized approach simplifies the development process and broadens the utility of AI models across different platforms.
+
+
+*Key distinction:**
+
+- **Without MCP:** Each tool needs custom integration code (agent + tool = bespoke connection)
+- **With MCP:** Tools are exposed via standardized MCP servers, so the agent uses the same protocol for all MCP-compliant tools
+
+So: **MCP is not *a* tool, but rather the standardized framework for how agents discover and invoke tools.** It's the infrastructure that makes the "Tools" feature scalable and reusable.
+
+Add this clarification to your notes if helpful: *"MCP standardizes the 'Tools' feature by providing a uniform protocol for agents to access external capabilities."*
+
+
+---
+
+---
+
+### **XII. Second Brain**
+
+### **Classic RAG vs Knowledge RAG vs RAG**
+
+[Intro to Agent Skills](https://www.youtube.com/watch?v=4mnP1lRdUm8)
+This video provides a deep dive into the "Agent Skills" standard, explaining how modular, on-demand knowledge can be injected into an agent's context to solve complex development tasks without overwhelming the token limit.
+
+
+* **Tools (External Integration):** These are the "peripheral devices" connectors for your agent. In Azure, these are typically **REST APIs**, **Python Functions**, **OpenAI Specs** or **Database Connections**. You provide the agent with a JSON definition of the tool, and the LLM decides when to "invoke" it. For instance, RAG systems and Model Context Protocol (MCP) also fall under this umbrella term.
+
+
 
 ---
 
