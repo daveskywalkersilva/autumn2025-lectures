@@ -456,16 +456,8 @@ Leading to the following project organization:
 ```
 project-root/
 │
-├── .agents/                        # The Control Plane
+├── .agents/                      # The Control Plane (or .github)
 │   ├── agent-config.json         # Orchestrator config (Global Policy)
-│   │
-│   ├── agents/                   # The "Virtual Machine" Definitions
-│   │   ├── doc-creator/
-│   │   │   ├── agent.md            # Persona definition (Markdown is standard)
-│   │   │   └── config.json         # Skill mapping & Temperature settings
-│   │   └── lead-developer/
-│   │       ├── agent.md            # Technical persona & System Prompt
-│   │       └── config.json         # Access rights to MCP tools
 │   │
 │   └── skills/                      # The "Logic Apps" / Runbooks
 │       ├── doc-formatting/
@@ -484,8 +476,6 @@ project-root/
 │   └── gitlab-client.json          # Config for GitLab integration
 │
 ├── tools/
-│   ├── README.md
-│   ├── config.json
 │   ├── start_vm.json
 │   ├── start_vm.ps1
 │   └── ...
@@ -649,11 +639,182 @@ The way agents start using the MCP protocol usually comes down to the same first
    - Server processes the request and returns structured response
    - Response can include multiple content blocks (text, images, binary data)
 
-About the way to use them, is also plainly simple:
+About the way to use them, its also plainly simple. Althought its considered a tool, since it's managed by external entities, the only thing needed to be managed its connection and declare it on the dedicated `.mcp` folder (already included in the previous project tree and again on the next chapter).
+Check the declaration of the `git.json` and `azure-server.json` mcp clients below:
+```json
+{
+  "mcpServers": {
+    "git-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "--repository",
+        "." 
+      ],
+      "env": {
+        "GIT_AUTHOR_NAME": "Agentic Developer",
+        "GIT_AUTHOR_EMAIL": "agent@yourproject.local"
+      }
+    }
+  }
+}
+```
+```json
+{
+  "mcpServers": {
+    "azure-foundry-tools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-azure",
+        "--endpoint",
+        "https://<YOUR_RESOURCE_NAME>.services.ai.azure.com/api/projects/<YOUR_PROJECT_NAME>"
+      ],
+      "env": {
+        "AZURE_PROJECT_CONNECTION_STRING": "endpoint=https://<YOUR_RESOURCE_NAME>.services.ai.azure.com/;project_id=<YOUR_PROJECT_ID>",
+        "AZURE_CLIENT_ID": "<YOUR_MANAGED_IDENTITY_OR_APP_ID>",
+        "AZURE_TENANT_ID": "<YOUR_TENANT_ID>",
+        "AZURE_CLIENT_SECRET": "<YOUR_CLIENT_SECRET_IF_NOT_USING_CLI_AUTH>",
+        "FOUNDRY_AGENT_LOCATION": "eastus"
+      }
+    }
+  }
+}
+```
 
 ---
 
-### **XIV. Building an MCP Server**
+### **XIV. Overview of a full Agentic AI project**
+
+bbbb
+```
+project-root/
+│
+├── .agents/                        # The Control Plane
+│   ├── agent-config.json         # Orchestrator config (Global Policy)
+│   │
+│   ├── agents/                   # The "Virtual Machine" Definitions
+│   │   ├── doc-creator/
+│   │   │   ├── agent.md            # Persona definition (Markdown is standard)
+│   │   │   └── config.json         # Skill mapping & Temperature settings
+│   │   └── lead-developer/
+│   │       ├── agent.md            # Technical persona & System Prompt
+│   │       └── config.json         # Access rights to MCP tools
+│   │
+│   └── skills/                      # The "Logic Apps" / Runbooks
+│       ├── doc-formatting/
+│       │   └── SKILL.md            # Standards for Markdown/Azure docs
+│       ├── implementation-guidelines/
+│       │   └── SKILL.md            # PEP8, Azure SDK, & DRY principles
+│       └── debugging-helper/
+│           ├── SKILL.md            # Diagnostic logic
+│           ├── gitlab_auth.py      # Execution script for the agent
+│           ├── common_errors.md    # Known Issue Database (NTP Grounding)
+│           ├── component_maps.md   # Topology references
+│           └── references.md          ← Links to related tools
+│
+├── .mcp/                           # The "Network Interface" (Tools)
+│   ├── azure-server.json           # Config for Azure MCP connection
+│   └── gitlab-client.json          # Config for GitLab integration
+│
+├── tools/
+│   ├── README.md
+│   ├── config.json
+│   ├── start_vm.json
+│   ├── start_vm.ps1
+│   └── ...
+│
+├── src/                            # Your actual Python code/Bicep files
+└── README.md
+```
+
+iii
+```json
+{
+  "project": "autumn2025-lectures",
+  "version": "1.0.0",
+  
+  "tools": {
+    "registry": [
+      {
+        "id": "start_azure_vm",
+        "schema_path": "../tools/start_vm.json",
+        "implementation_path": "../tools/start_vm.ps1",
+        "type": "powershell",
+        "category": "Infrastructure Control",
+        "severity": "High"
+      },
+      {
+        "id": "check_azure_quotas",
+        "schema_path": "../tools/check_quotas.json",
+        "implementation_path": "../tools/check_quotas.ps1",
+        "type": "powershell",
+        "category": "Validation"
+      }
+    ]
+  },
+  
+  "skills": {
+    "path": "./skills",
+    "auto_load": true,
+    "registry": [
+      {
+        "id": "azure-vm-control",
+        "path": "./skills/azure-vm-control/SKILL.md",
+        "category": "Infrastructure"
+      },
+      {
+        "id": "azure-quotas",
+        "path": "./skills/azure-quotas/SKILL.md",
+        "category": "Validation"
+      }
+    ]
+  },
+  
+  "mcpServers": {
+    "azure-vm": {
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "../tools/start_vm.ps1"]
+    },
+    "azure-deployment": {
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "../tools/deploy_bicep.ps1"]
+    }
+  },
+  
+  "agents": {
+    "infrastructure-architect": {
+      "config_path": "./agents/infrastructure-architect/agent.yaml",
+      "instructions_path": "./agents/infrastructure-architect/instructions.md",
+      "skills": ["azure-vm-control", "azure-quotas"],
+      "tools": ["start_azure_vm", "check_azure_quotas", "deploy_bicep"],
+      "enabled": true
+    },
+    
+    "cost-optimizer": {
+      "config_path": "./agents/cost-optimizer/agent.yaml",
+      "skills": ["cost-analysis"],
+      "tools": ["check_azure_quotas", "analyze_costs"],
+      "enabled": true
+    },
+    
+    "security-auditor": {
+      "config_path": "./agents/security-auditor/agent.yaml",
+      "skills": ["compliance"],
+      "tools": ["audit_rbac", "scan_vulnerabilities"],
+      "enabled": true
+    }
+  },
+  
+  "orchestration": {
+    "type": "parallel",
+    "timeout_seconds": 600,
+    "max_concurrent_agents": 3
+  }
+}
+```
+
 ---
 
 ### **XII. Second Brain**
