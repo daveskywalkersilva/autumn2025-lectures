@@ -261,14 +261,34 @@ To use them, you should follow and **read** the [Agent Skills Article](https://a
 2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
 3. **Add other folders and files:** if needed, with related content like code, documentation or templates, following an hierarchical order. You can then refer to those like "*To check template details go to './extra-details.md'*".
 4. **Check if has been created:** by asking you agent, like in VSCode, to see the custom skills you just created, and wait for the output list.
-5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on, or set it on teh description to be used when a key word is found.
+5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on, or set it on the description to be used when a key word is found.
 
-Be careful to make sure that the skills are loaded - often times they are cached and not frequently fetched, so you might need to request it to be fecthed again.
+The end project would then be similar to this:
+```
+project-root/
+├── **.agents/**
+│   └── **skills/**
+│       └── **azure-vm-control/**
+│           └── **SKILL.md**
+│
+├── tools/
+│   ├── README.md               ← Documents all available tools
+│   ├── config.json             ← Tool registry (what you created)
+│   ├── start_vm.json
+│   ├── start_vm.ps1
+│   ├── check_quotas.json
+│   └── check_quotas.ps1
+│
+├── agent-config.json           ← Main config (references .agents/ and tools/)
+└── ...
+```
 
-You can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
+Be careful to make sure that the skills are loaded - often times they are cached and not frequently fetched, so you might need to request it to be fecthed again, specially on VSCode, since they usually use their own folder terminology as `.github` which includes automatic registration.
+
+Anyhow, you can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
 
 > NOTE:
-> You can see Skills as more flexible types of context retrieval - like a RAG approach. However, instead of getting files from a database, it just goes over the markdown files
+> You can also use Skills as a more flexible type of context retrieval - like a RAG approach. However, instead of getting files from a database, it just goes over the markdown files.
 
 ---
 
@@ -339,7 +359,8 @@ try {
 catch{}
 ```
 
-Last but not least, it is important to **"register" the tool created** in **one of following three options**. Either in `./tools/README.md` (like below):
+Last but not least, it is important to **"register" the tool created**. Here is where it really depends on how widespread you want it to be available, since you can declare it only for a single agent on its folder, or for all agents registering in a root file. In any case, here are the **4 options** more commonly used.
+In `./tools/README.md` (like below) - allows global usage:
 ```markdown
 # Tools Registry
 
@@ -403,22 +424,74 @@ Or the root path `./agent-config.json`, in case you want to register also Skills
 }
 ```
 
+And, in the end, on a agent folder like `.agents/agents/developer/tools.json` where only he will know how to use it:
+```json
+{
+  "agent_id": "developer",
+  "tools": [
+    {
+      "name": "start_azure_vm",
+      "priority": 2,
+      "required": false,
+      "permissions": ["Virtual Machine Contributor"]
+    },
+    {
+      "name": "deploy_bicep",
+      "priority": 2,
+      "required": false,
+      "permissions": ["Contributor"],
+      "requires_approval": true
+    },
+    {
+      "name": "list_azure_resources",
+      "priority": 1,
+      "required": false,
+      "permissions": ["Reader"]
+    }
+  ]
+}
+```
+
 Leading to the following project organization:
 ```
 project-root/
-├── .agents/
-│   └── skills/
-│       └── azure-vm-control/
-│           └── SKILL.md
+│
+├── .agents/                        # The Control Plane
+│   ├── agent-config.json         # Orchestrator config (Global Policy)
+│   │
+│   ├── agents/                   # The "Virtual Machine" Definitions
+│   │   ├── doc-creator/
+│   │   │   ├── agent.md            # Persona definition (Markdown is standard)
+│   │   │   └── config.json         # Skill mapping & Temperature settings
+│   │   └── lead-developer/
+│   │       ├── agent.md            # Technical persona & System Prompt
+│   │       └── config.json         # Access rights to MCP tools
+│   │
+│   └── skills/                      # The "Logic Apps" / Runbooks
+│       ├── doc-formatting/
+│       │   └── SKILL.md            # Standards for Markdown/Azure docs
+│       ├── implementation-guidelines/
+│       │   └── SKILL.md            # PEP8, Azure SDK, & DRY principles
+│       └── debugging-helper/
+│           ├── SKILL.md            # Diagnostic logic
+│           ├── gitlab_auth.py      # Execution script for the agent
+│           ├── common_errors.md    # Known Issue Database (NTP Grounding)
+│           ├── component_maps.md   # Topology references
+│           └── references.md          ← Links to related tools
+│
+├── .mcp/                           # The "Network Interface" (Tools)
+│   ├── azure-server.json           # Config for Azure MCP connection
+│   └── gitlab-client.json          # Config for GitLab integration
+│
 ├── tools/
-│   ├── README.md               ← Documents all available tools
-│   ├── config.json             ← Tool registry (what you created)
+│   ├── README.md
+│   ├── config.json
 │   ├── start_vm.json
 │   ├── start_vm.ps1
-│   ├── check_quotas.json
-│   └── check_quotas.ps1
-├── agent-config.json           ← Main config (references .agents/ and tools/)
-└── ...
+│   └── ...
+│
+├── src/                            # Your actual Python code/Bicep files
+└── README.md
 ```
 
 Notice that without registration, it would require to point to the target files and provide context on the prompt in each session. But this way, Agents will know **which tools are available** before deciding to use them. Currently, there are two primary mechanisms for tool discovery: **static** and **dynamic**.
@@ -495,12 +568,12 @@ Since the tools are very powerful, but sensitive things, it's **crucial** to kee
 
 ---
 
-#### **XIII. Tools Communication: MCP and APIs**
-Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask to access and query Google Calendar each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them up to add.
+### **XIII. Tools Communication: MCP and APIs**
+Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask to access and query Google Calendar each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them up to use them.
 
 Looking to avoid duplicating efforts and speed integration, the **MCP** protocol was created.
 
-The **Model Context Protocol (MCP)** is merely an open-source **standardized** protocol that enables seamless integration between Foundational Models (FM) applications and external data sources, similar to how APIs work for *Web Services*. 
+The **Model Context Protocol (MCP)** is merely an open-source **standardized** protocol that enables seamless integration between Foundational Models (FM) applications and external data sources, similar to how APIs work for *Web Services*. A good way to put it is that *"MCP standardizes the 'Tools' feature by providing a uniform protocol for agents to access external capabilities."*
 
 MCP operates on a **client-server architecture** within a larger **host ecosystem**, making the three-tier model:
 1. **MCP Host**: The AI application (Claude Desktop, VS Code, ChatGPT, etc.) that coordinates all connections
@@ -516,13 +589,39 @@ MCP operates on a **client-server architecture** within a larger **host ecosyste
    - Defined by the capabilities it declares during initialization
    - Proactively notifies clients when capabilities change
 
-To the structured, typed data format that describes capabilities and resources to be accessed by MCP we call primitives. Currently there are 2 types:
+To the structured, typed data format that describes capabilities and resources to be accessed by MCP we call primitives. Currently there are 3 types of server primitives - tools, resources and prompts - and 3 types of client primitives - sampling, elicitation and roots.
+**Server Primitives (What servers expose to clients):**
+- **`tools`**: Executable functions that AI models can invoke to perform actions
+  - Examples: file operations, API calls, database queries, webhook triggers
+  - Each tool has: `name`, `description`, `inputSchema` (JSON Schema for validation)
+  - Discovery method: `tools/list`; Execution method: `tools/call`
+  - Supports real-time updates via `tools/list_changed` notifications
+- **`resources`**: Static or semi-static data that provides context to AI models
+  - Examples: file contents, database schemas, API documentation, codebase snippets
+  - Models can read resources to understand the context they're operating within
+  - Discovery: `resources/list`; Retrieval: `resources/read`
+  - URI-based addressing (e.g., `file://path/to/file` or `db://schema/table`)
+- **`prompts`**: Reusable templates and workflows for structuring LLM interactions
+  - Examples: system prompts, few-shot examples, analysis frameworks
+  - Pre-written guidance that can be dynamically customized with arguments
+  - Discovery: `prompts/list`; Retrieval: `prompts/get`
+
+**Client Primitives (What servers can request from clients/hosts):**
+- **`sampling`**: Servers request language model completions from the host's LLM
+  - Enables servers to perform agentic reasoning without embedding an LLM
+  - Model-agnostic: server doesn't know if it's Claude, GPT-4, or Llama
+  - Method: `sampling/complete` with prompt and optional parameters
+- **`elicitation`**: Servers request additional information from users
+  - Useful for confirmation, clarification, or interactive workflows
+  - Method: `elicitation/request`
+- **`roots`**: Servers discover filesystem or URI boundaries the host trusts
+  - Enables servers to understand what they can safely access
+  - Method: `roots/list`
 
 > NOTE:
 > **For Azure Architects**: Use MCP to build specialized servers for each concern domain (Infrastructure, Security, Compliance, Cost). The orchestrator routes decisions through these specialized agents in parallel, achieving better outcomes than a single monolithic agent. Cost increases with token multiplexing, but quality improvement justifies it for high-stakes decisions.
 
-
-### **Comparison between MCP, API, Webhooks and SDK**
+Below you can find a comparisson between **MCP, API, Webhooks and SDK**
 
 | Aspect | MCP (Standardized) | RESTful APIs | Webhooks | Direct SDK Integration |
 |--------|-------------------|-----------|----------|------------------------|
@@ -533,29 +632,28 @@ To the structured, typed data format that describes capabilities and resources t
 | **Performance** | Connection pooling, persistent clients | Stateless HTTP | Event-driven overhead | Direct memory calls |
 | **Ease for Developers** | Learn once, apply everywhere | Per-API documentation | Framework-specific | High coupling |
 
-allowing to avoid  tools, and APIs.
+The way agents start using the MCP protocol usually comes down to the same first 3 steps:
+1. **Initialization Handshake**
+   - Client sends `initialize` with supported `protocolVersion` and `capabilities`
+   - Server responds with its own capabilities and version
+   - Both parties declare what features they support (tools, resources, prompts, etc.)
+   - If no common protocol version, connection terminates
 
-It is exclusively about standardizing the connection protocol between AI applications and external systems.
+2. **Capability Discovery**
+   - Client sends `tools/list`, `resources/list`, `prompts/list` as needed
+   - Server responds with metadata describing each available capability
+   - Client caches discovered capabilities for the conversation
 
-Model Context Protocol (MCP)
+3. **Tool/Resource Access**
+   - Client sends `tools/call` or `resources/read` with appropriate parameters
+   - Server processes the request and returns structured response
+   - Response can include multiple content blocks (text, images, binary data)
 
-* MCP standardizes the interaction between large language models and external data sources, facilitating more efficient connections.
-* It allows LLMs to access various systems, such as databases or email servers, without needing custom integration for each application.
-* This standardized approach simplifies the development process and broadens the utility of AI models across different platforms.
-
-
-*Key distinction:**
-
-- **Without MCP:** Each tool needs custom integration code (agent + tool = bespoke connection)
-- **With MCP:** Tools are exposed via standardized MCP servers, so the agent uses the same protocol for all MCP-compliant tools
-
-So: **MCP is not *a* tool, but rather the standardized framework for how agents discover and invoke tools.** It's the infrastructure that makes the "Tools" feature scalable and reusable.
-
-Add this clarification to your notes if helpful: *"MCP standardizes the 'Tools' feature by providing a uniform protocol for agents to access external capabilities."*
-
+About the way to use them, is also plainly simple:
 
 ---
 
+### **XIV. Building an MCP Server**
 ---
 
 ### **XII. Second Brain**
