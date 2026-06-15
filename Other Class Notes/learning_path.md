@@ -133,7 +133,7 @@ To study from (BACKLOG):
 
 Queue:
 * [I Replaced ChatGPT With Claude for All My Azure Work (Here's What Happened)](https://www.youtube.com/watch?v=Prv7VGqaiKI)
-* [What are Skills, Agents, Prompts, Instructions and how to use them?](https://www.youtube.com/watch?v=QcxL0SXILC4)
+* ~~[What are Skills, Agents, Prompts, Instructions and how to use them?](https://www.youtube.com/watch?v=QcxL0SXILC4)~~
 * [Agentic AI Engineering: Complete 4-Hour Workshop feat. MCP, CrewAI and OpenAI Agents SDK](https://www.youtube.com/watch?v=LSk5KaEGVk4)
 * [RAG Crash Course for Beginners](https://www.youtube.com/watch?v=swvzKSOEluc)
 * []()

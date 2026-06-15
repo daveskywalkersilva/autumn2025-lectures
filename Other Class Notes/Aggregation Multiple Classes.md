@@ -293,9 +293,9 @@ Anyhow, you can find already plenty of public shared skills. Some valuable ones 
 ---
 
 ### **XII. Agents features (2/2): Tools**
-Still, if the goal is to fetch currently available and often updated data from external sources, a Skill won't do as it is not suitable for very dynamic data. Hence, the need to allow for Agents to fetch data, comunicate and make actions in third party systems appeared, and the concept of **tools** was created. 
+Still, if the goal is to fetch currently available and often updated data from external sources, a Skill explaining how to call an API or even describing that necessary data won't do as it is not suitable for very dynamic scenarios. Hence, the need to allow for Agents to fetch data, comunicate and make actions in third party systems appeared and the concept of **tools** was created. 
 
-Tools are nothing more than **"peripheral devices" for your agent**. Without them, the agent would be like an isolated VM with no NIC whose action and scope is limited to itself and to its training. However they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding, and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
+Tools are nothing more than **"peripheral devices" for your agent** (like the "mouse", "keyboard" or "monitor" for your laptop). Without them, the agent would be like an isolated VM with no NIC whose action and scope is limited to itself and to its training. However they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
 
 Every tool has 3 essential components: 
 * **Registration**: So that Agent can know what to use the tool for.
@@ -559,11 +559,11 @@ Since the tools are very powerful, but sensitive things, it's **crucial** to kee
 ---
 
 ### **XIII. Tools Communication: MCP and APIs**
-Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask to access and query Google Calendar each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them up to use them.
+Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask the agent to access and query Google Calendar, each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them to use them. And if the model didn't have those built-in, then thousands of developers would need to create their own versions.
 
-Looking to avoid duplicating efforts and speed integration, the **MCP** protocol was created.
+Therefore, in looking to avoid duplicating efforts and speed integration, the **MCP** protocol was created.
 
-The **Model Context Protocol (MCP)** is merely an open-source **standardized** protocol that enables seamless integration between Foundational Models (FM) applications and external data sources, similar to how APIs work for *Web Services*. A good way to put it is that *"MCP standardizes the 'Tools' feature by providing a uniform protocol for agents to access external capabilities."*
+The **Model Context Protocol (MCP)** is merely an open-source **standardized** protocol that enables seamless integration between Foundational Models (FM) applications and external data sources, similar to how APIs work for *Web Services*. A good way to put it is that *"MCP standardizes the 'Tools' feature by providing a uniform protocol for agents to access external capabilities"*. In other words, the **MCP exposes tools for the Agent to use**.
 
 MCP operates on a **client-server architecture** within a larger **host ecosystem**, making the three-tier model:
 1. **MCP Host**: The AI application (Claude Desktop, VS Code, ChatGPT, etc.) that coordinates all connections
@@ -579,7 +579,7 @@ MCP operates on a **client-server architecture** within a larger **host ecosyste
    - Defined by the capabilities it declares during initialization
    - Proactively notifies clients when capabilities change
 
-To the structured, typed data format that describes capabilities and resources to be accessed by MCP we call primitives. Currently there are 3 types of server primitives - tools, resources and prompts - and 3 types of client primitives - sampling, elicitation and roots.
+To the structured, typed data format - that describes capabilities and resources to be accessed by MCP - we call primitives. Currently there are 3 types of server primitives - tools, resources and prompts - and 3 types of client primitives - sampling, elicitation and roots, all detailed below:
 **Server Primitives (What servers expose to clients):**
 - **`tools`**: Executable functions that AI models can invoke to perform actions
   - Examples: file operations, API calls, database queries, webhook triggers
@@ -643,7 +643,7 @@ About the way to use them, its also plainly simple. Althought its considered a t
 Check the declaration of the `git.json` and `azure-server.json` mcp clients below:
 ```json
 {
-  "mcpServers": {
+  "servers": {
     "git-local": {
       "command": "npx",
       "args": [
@@ -662,7 +662,7 @@ Check the declaration of the `git.json` and `azure-server.json` mcp clients belo
 ```
 ```json
 {
-  "mcpServers": {
+  "servers": {
     "azure-foundry-tools": {
       "command": "npx",
       "args": [
@@ -685,9 +685,107 @@ Check the declaration of the `git.json` and `azure-server.json` mcp clients belo
 
 ---
 
-### **XIV. Overview of a full Agentic AI project**
+### **XIV. AI Customization**
+Given the ability to now standardize tool discovery, it was now imperative to be able to standardize the behaviour of the working agent and, sometimes even, tailor agents so they can become more reliable on what we want them to do.
 
-bbbb
+To this customization of the agentic process we call **AI Customization** and is mostly available nowadays by most providers to do so within the coding projects. Although, truthfully speaking, there are a lot of customizations to choose from - like the model, the MCPs, APIs, CLIs - this document will focus more on the more static project/orchestration features, like the *Instructions*, *Prompts*, *Agents*, *Skills* and *Hooks* files. 
+
+A better (probably always up to date) in-depth analysis of these concepts can be found in the [Customize AI in Visual Studio Code](https://code.visualstudio.com/docs/agent-customization/overview) documentation, however **the summary of it is the following**:
+* `Instructions`: are split between the files `AGENTS.md` (or alternatively `copilot-instructions.md`) and `*.instructions.md`. They should be used as **auto-loaded** rules for code conventions in a **directory scope** (including global/project scope), like frameworks of work and rules for documentation - pretty much everything related to project standards, formats and do/don't's;
+* `Prompts`: are nothing more than `*.prompt.md` files that contain reusable prompts often made, that can be refered to via slash commands. A good instance is a `/debug` prompt where you would reuse changing only the input argument `subscriptionId`. 
+* `Skills`: already mentioned in [chapter XI](#xi-agents-features-12-skills), they allow to package scripts and instructions that are **loaded on-demand** by the custom agent to do **specialized tasks**.
+* `Custom Agents`: often called personas, are files `*.agent.md` files that allows to customize agents to interact with user in a certain pattern or focus on a specific topic to prevent hallocinations;
+* `Hooks`: enable you to activate shell commands or scripts at key points of the agent's workflow. A use case of their usage is to activate logs, block dangerous operations or just force explicit approval from user everytime.
+* ``
+
+> Between the instructions and the Skills, the big difference is what they encapsulate and what they should be used for. Instructions only allow markdown files and should be used for guidelines mostly. Skills on the other hand, allow scripts and supporting resources and should be used for task-specific operations
+
+As to help with starting creating your own - as well as understand their use cases - refer to the header parameters list for each of the customization files:
+
+#### **1. Instruction Files Headers**
+| Field | Required | Description |
+| --- | --- | --- |
+| `name` | No | Display name shown in the UI. Defaults to the file name. |
+| `description` | No | Short description shown on hover in the Chat view. |
+| `applyTo` | No | **Glob pattern** that defines which files the instructions apply to automatically, relative to the workspace root. Use `**` to apply to all files. If not specified, the instructions are not applied automatically, but you can still add them manually to a chat request. |
+
+#### **2. Prompt Files Headers**
+| Field | Required | Description |
+| --- | --- | --- |
+| `description` | No | A short description of the prompt. |
+| `name` | No | The name of the prompt, used after typing `/` in chat. If not specified, the file name is used. |
+| `argument-hint` | No | Hint text shown in the chat input field to guide users on how to interact with the prompt. |
+| `agent` | No | The agent used for running the prompt: `ask`, `agent`, `plan`, or the name of a custom agent. By default, the current agent is used. If tools are specified, the default agent is `agent`. |
+| `model` | No | The language model used when running the prompt. If not specified, the currently selected model in model picker is used. |
+| `tools` | No | A list of tool or tool set names that are available for this prompt. Can include built-in tools, tool sets, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format. Learn more about tools in chat. |
+
+#### **3. Skill Files Headers**
+| Field | Required | Description |
+| --- | --- | --- |
+| `name` | Yes | A unique identifier for the skill. Only lowercase letters, numbers, and hyphens are allowed (for example, `webapp-testing`). Do not use slashes, colons, dots, or namespace prefixes. Must match the parent directory name. Maximum 64 characters. Names with invalid characters cause the skill to silently fail to load. |
+| `description` | Yes | A description of what the skill does **and when to use it**. Be specific about both capabilities and use cases to help Copilot decide when to load the skill. Maximum 1024 characters. |
+| `argument-hint` | No | Hint text shown in the chat input field when the skill is invoked as a slash command. Helps users understand what additional information to provide (for example, `[test file] [options]`). |
+| `user-invocable` | No | Controls whether the skill appears as a slash command in the chat menu. Defaults to `true`. Set to `false` to hide the skill from the `/` menu while still allowing the agent to load it automatically. |
+| `disable-model-invocation` | No | Controls whether the agent can automatically load the skill based on relevance. Defaults to `false`. Set to `true` to require manual invocation through the `/` slash command only. |
+| `context` | No | (Experimental) Controls how the skill is loaded. Defaults to inline (the skill's instructions are added to the parent agent's context). Set to `fork` to run the skill in a dedicated subagent context. See Run a skill in a forked context. |
+
+#### **4. Custom Agent Files Headers**
+| Field | Description |
+| --- | --- |
+| `description` | A brief description of the custom agent, shown as placeholder text in the chat input field. |
+| `name` | The name of the custom agent. If not specified, the file name is used. |
+| `argument-hint` | Optional hint text shown in the chat input field to guide users on how to interact with the custom agent. |
+| `tools` | A list of tool or tool set names that are available for this custom agent. Can include built-in tools, tool sets, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format. Learn more about tools in chat. |
+| `agents` | A list of agent names that are available as subagents in this agent. Use `*` to allow all agents, or an empty array `[]` to prevent any subagent use. If you specify `agents`, ensure the `agent` tool is included in the `tools` property. To create a self-referential agent that lists itself in `agents`, enable `chat.subagents.allowInvocationsFromSubagents`. Learn more about nested subagents. |
+| `model` | The AI model to use when running the prompt. Specify a single model name (string) or a prioritized list of models (array). When you specify an array, the system tries each model in order until an available one is found. If not specified, the currently selected model in model picker is used. |
+| `user-invocable` | Optional boolean flag to control whether the agent appears in the agents dropdown in chat (default is `true`). Set to `false` to create agents that are only accessible as subagents or programmatically. |
+| `disable-model-invocation` | Optional boolean flag to prevent the agent from being invoked as a subagent by other agents (default is `false`). |
+| `infer` | **Deprecated**. Use `user-invocable` and `disable-model-invocation` instead. Previously, `infer: true` (the default) made the agent both visible in the picker and available as a subagent. `infer: false` hid it from both. The new fields give you independent control: use `user-invocable: false` to hide from the picker while still allowing subagent invocation, or `disable-model-invocation: true` to prevent subagent invocation while keeping it in the picker. |
+| `target` | The target environment or context for the custom agent (`vscode` or `github-copilot`). |
+| `mcp-servers` | Optional list of Model Context Protocol (MCP) server config json to use with custom agents in GitHub Copilot (target: `github-copilot`). |
+| `handoffs` | Optional list of suggested next actions or prompts to transition between custom agents. Handoffs buttons appear as interactive suggestions after a chat response completes. |
+| `handoffs.label` | The display text shown on the handoff button. |
+| `handoffs.agent` | The target agent identifier to switch to. |
+| `handoffs.prompt` | The prompt text to send to the target agent. |
+| `handoffs.send` | Optional boolean flag to auto-submit the prompt (default is `false`). |
+| `handoffs.model` | Optional language model to use when the handoff executes. Use the qualified model name in the format `Model Name (vendor)`, for example `GPT-5 (copilot)` or `Claude Sonnet 4.5 (copilot)`. |
+| `hooks` (Preview) | Optional hook commands scoped to this agent. Hooks defined here only run when this agent is active, either invoked by the user or as a subagent. Uses the same format as hook configuration files. Requires `chat.useCustomAgentHooks` to be enabled. |
+
+#### **5. Hooks File**
+In this case, since the Hooks are described in a `json` format, lets go over the hooks events we can configure for:
+
+| Hook Event | When It Fires | Common Use Cases |
+| --- | --- | --- |
+| `SessionStart` | User submits the first prompt of a new session | Initialize resources, log session start, validate project state |
+| `UserPromptSubmit` | User submits a prompt | Audit user requests, inject system context |
+| `PreToolUse` | Before agent invokes any tool | Block dangerous operations, require approval, modify tool input |
+| `PostToolUse` | After tool completes successfully | Run formatters, log results, trigger follow-up actions |
+| `PreCompact` | Before conversation context is compacted | Export important context, save state before truncation |
+| `SubagentStart` | Subagent is spawned | Track nested agent usage, initialize subagent resources |
+| `SubagentStop` | Subagent completes | Aggregate results, cleanup subagent resources |
+| `Stop` | Agent session ends | Generate reports, cleanup resources, send notifications |
+
+The end product would be something kin to this `.github/hooks/formatting.json` hook for instance:
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "./scripts/format-changed-files.sh",
+        "windows": "powershell -File scripts\\format-changed-files.ps1",
+        "timeout": 30
+      }
+    ]
+  }
+}
+
+```
+
+---
+
+### **XIV. Overview of a full Agentic AI project**
+Every Agentic project have a set of structures that should be followed. These can in some part be ignored, but I believe they should be kept and just "fine-tuned" for best outcomes, leading to the following project structure:
 ```
 project-root/
 │
@@ -729,7 +827,44 @@ project-root/
 └── README.md
 ```
 
-iii
+So, starting from the ground up so that we can both understand the project we depicted, as well as have set up a project of our own with only the needed files:
+* `AGENTS.md`: is an open format meant to be used as the team's baseline context: coding standards, libraries, project architecture - and is loaded automatically in every chat. Rule of thumb: think as "things you'ld tell a new teammate on day one";
+* `.github\copilot-instructions.md`: this is an optional file that pretty much overlaps with the previous `AGENTS.md` and is only locked to be used by github copilot. However, it is necessary for some features like copilot review, so leave it statically to refer to the latter if possible for the best results;
+* `.github\agents`: where you keep custom agents (e.g. `devops-expert.agent.md`). A good practice is 
+* guide AI coding agents across various tools, making it vendor-agnostic. Use it to include global practices that the agents should follow (e.g. "use brief language", "running python version 3.9") and therefore is normally found at the root folder.
+* `.github\hooks`: like the name implies, they are a json declared file that triggers a set of scripts when a key word is referenced, allowing for instance, to catch actions to warn about or start updating docs when a commit is done;
+* `.github\instructions`: **extension to the `AGENTS.md` that are loaded on-demand** to avoid polluting context. It's useful for **additional instructions** that should be **only applied when specifically required**. A good example would be the initial setup of the project, with downloads and environment verifications;
+* `.github\prompts`: are a set of **reusable prompts that you can invoke on demand** - they are not a persona and neither a rule - just a **stored task you may trigger explicitly**. A good instance is a `explain-code.prompt.md` that you can refer in the chat to explain a line of code with your preferred approach;
+* `.github\skills`: folder-based capability packaged with a required `SKILL.md` file that are loaded automatically by an agent and allow. You can use them to break down a plan into epic > feature and story or load
+* `.github\workflows`: are coding agents that work autonomously in a GitHub actions environment around development tasks to create a pull requets with the results. The best comparisson would be a pipeline/runbook with a scheduler that fecthes data and performs analysis and reports. 
+
+
+> If you would like to have instructions being triggered by context from the prompt chat, you can include them a reference in the `AGENTS.md`. Just paste a line like: "for X related topics, refer to the `.github\instructions\X.md` file". You can check it's success in the logs or thinking reasoning by the model.
+
+> The loading process of the agentic customizations after a prompt is sent is: Instructions > Skills > Hooks > Agents.
+
+#### About a good AGENTS.md
+Notice also that from research papers we've found that AI Generated `AGENTS.md` actually perform way worse and cost over 20% less compaired with written ones, because they duplicate what the Agennts already know. So prioritize writting your own file (or at leats review it) by focusing on 3 questions:
+* The "WHAT": Your tech stack, project structure, 
+* The "WHY": The purpose of the project
+* The "HOW":
+
+> NOTE:
+> You can setup additional `AGENTS.md` in specific deirectories to apply more or different rules. However this ends up throwing developers a little out of the loop, and needing them to know where and how many there are, so avoid it unless you have multiple Services (like Frontend and Backend) in the same repo, to which then you should add a different `AGENTS.md` to each highlighting the project's context.
+
+
+* in Agents.md include `Project Overview`, `Running Environment`, `Project Structure`, `Code Style`, `Boundaries`, ``, ``, ``
+* tip: include commands early in the file and use instances;
+* tip: make a sub agent to update the 
+* check the file here: https://www.youtube.com/watch?v=6w88NVf2_lY
+
+---
+
+#### About good custom agents:
+Is good to keep a chat only with an orchestrator agent, since that way we can leverage a "planner" agent to debate you and a coder agent that executes code changes but does not et polluted with the conversation context.
+
+
+
 ```json
 {
   "project": "autumn2025-lectures",
@@ -818,6 +953,18 @@ iii
 ---
 
 ### **XII. Second Brain**
+Nothing more that a "write-docs-after-yourself" skill.
+
+---
+
+### Andrej Karpathy's Discovery
+
+Agentic Engineering:
+1. **Spec-First-Development | Write specs before touching the agent:** since it doesn't know your codebase conventions, naming patterns, or business. A rule file tells this before anything else;
+2. **Human Oversight | Choose your review posture and stick to it:** by choosing 1 of 2 modes - watch the agent work and approve edits in real time, or let it run and review the final PR.
+3. **Test Harness First | Build test harnesses before scaling agent output:** At agent speed, a 1% error rate causes real damage. Automated tests need to catch bad code before it merges, not after.
+4. **Parallel Agent System | Design for parallel agents, not a single session:** Running multiple agents simultaneously requires clear task boundaries, isolated branches, and a merge strategy not just a bigger prompt.
+
 
 ### **Classic RAG vs Knowledge RAG vs RAG**
 
