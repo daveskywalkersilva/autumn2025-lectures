@@ -56,6 +56,8 @@ Microsft Extend Days:
 * []()
 
 Videos:
+* [Agent-First Workflow: Session Management in VS Code](https://www.youtube.com/watch?v=7G-DRGpG6wc)
+* [Completely understand hooks in less than 20 minutes](https://www.youtube.com/watch?v=03CfGf9iw_U)
 * [Claude Code for Desktop Just Killed the CLI](https://www.youtube.com/watch?v=g0fndgIMHHo&t=1s);
 * [Every Claude Code Concept Explained for Normal People](https://www.youtube.com/watch?v=ZlDnsf_DOzg)
 * [How Claude Code’s Creator Starts EVERY Project](https://www.youtube.com/watch?v=KWrsLqnB6vA);

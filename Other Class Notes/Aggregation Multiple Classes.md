@@ -256,7 +256,7 @@ They allow the benefits like:
 * **Progressive Disclosure:** To save on "Compute Cost" (Tokens), mening that skills allow agents to load only the specific documentation or logic needed for a task — like **Dynamic Library Loading** in OS architecture - according to the info provided in Skill's name and description, keeping loading to the minimum.
 * **The Blueprint:** Where a skill tells the agent *how* to use its tools. For example, an "Azure Deployment Skill" would contain the troubleshooting flows and best practices for ARM templates, rather than just the raw API.
 
-To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home), but in summary, you can set one and use it by:
+To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home) - as well as check the necessary fields in the [AI Customization's Skill Headers](#3-skill-files-headers) - but in summary, you can set one and use it by:
 1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[concept-identifier]".
 2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
 3. **Add other folders and files:** if needed, with related content like code, documentation or templates, following an hierarchical order. You can then refer to those like "*To check template details go to './extra-details.md'*".
@@ -559,11 +559,12 @@ Since the tools are very powerful, but sensitive things, it's **crucial** to kee
 ---
 
 ### **XIII. Tools Communication: MCP and APIs**
-Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask the agent to access and query Google Calendar, each Agent's company - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them to use them. And if the model didn't have those built-in, then thousands of developers would need to create their own versions.
-
-Therefore, in looking to avoid duplicating efforts and speed integration, the **MCP** protocol was created.
+Although tools were a valuable addition, soon an issue rose up. Previously, for a prompt where a dev would ask the agent to access and query Google Calendar, each Agent's provider - for instance Anthropic, OpenAI, Microsoft, Google - models would need to develop their own sets of integrations, error handling and maintain them to use them. And if the model didn't have those built-in, then thousands of developers would need to create their own versions.
+So, looking to avoid duplicating effort and speed integration, the **MCP** protocol was created.
 
 The **Model Context Protocol (MCP)** is merely an open-source **standardized** protocol that enables seamless integration between Foundational Models (FM) applications and external data sources, similar to how APIs work for *Web Services*. A good way to put it is that *"MCP standardizes the 'Tools' feature by providing a uniform protocol for agents to access external capabilities"*. In other words, the **MCP exposes tools for the Agent to use**.
+
+> NEEDS REVIEW BELOW.
 
 MCP operates on a **client-server architecture** within a larger **host ecosystem**, making the three-tier model:
 1. **MCP Host**: The AI application (Claude Desktop, VS Code, ChatGPT, etc.) that coordinates all connections
@@ -688,19 +689,29 @@ Check the declaration of the `git.json` and `azure-server.json` mcp clients belo
 ### **XIV. AI Customization**
 Given the ability to now standardize tool discovery, it was now imperative to be able to standardize the behaviour of the working agent and, sometimes even, tailor agents so they can become more reliable on what we want them to do.
 
-To this customization of the agentic process we call **AI Customization** and is mostly available nowadays by most providers to do so within the coding projects. Although, truthfully speaking, there are a lot of customizations to choose from - like the model, the MCPs, APIs, CLIs - this document will focus more on the more static project/orchestration features, like the *Instructions*, *Prompts*, *Agents*, *Skills* and *Hooks* files. 
+To this tailoring of the agentic process we call **AI Customization** and is mostly available nowadays by most providers to do so within the coding projects. Although, truthfully speaking, there are a lot of customizations to choose from - like the model, the MCPs, APIs, CLIs - this document will focus more on the more static project/orchestration features, like the *Instructions*, *Prompts*, *Agents*, *Skills* and *Hooks* files. 
 
 A better (probably always up to date) in-depth analysis of these concepts can be found in the [Customize AI in Visual Studio Code](https://code.visualstudio.com/docs/agent-customization/overview) documentation, however **the summary of it is the following**:
 * `Instructions`: are split between the files `AGENTS.md` (or alternatively `copilot-instructions.md`) and `*.instructions.md`. They should be used as **auto-loaded** rules for code conventions in a **directory scope** (including global/project scope), like frameworks of work and rules for documentation - pretty much everything related to project standards, formats and do/don't's;
 * `Prompts`: are nothing more than `*.prompt.md` files that contain reusable prompts often made, that can be refered to via slash commands. A good instance is a `/debug` prompt where you would reuse changing only the input argument `subscriptionId`. 
 * `Skills`: already mentioned in [chapter XI](#xi-agents-features-12-skills), they allow to package scripts and instructions that are **loaded on-demand** by the custom agent to do **specialized tasks**.
-* `Custom Agents`: often called personas, are files `*.agent.md` files that allows to customize agents to interact with user in a certain pattern or focus on a specific topic to prevent hallocinations;
-* `Hooks`: enable you to activate shell commands or scripts at key points of the agent's workflow. A use case of their usage is to activate logs, block dangerous operations or just force explicit approval from user everytime.
-* ``
+* `Custom Agents`: often called personas, are `*.agent.md` files that allow to customize agents to interact with user in a certain pattern or focus on a specific topic to prevent hallocinations;
+* `Hooks`: enables you to activate shell commands or scripts at key points of the agent's workflow. A use case of their usage is to activate logs, block dangerous operations or just force explicit approval from user everytime.
 
 > Between the instructions and the Skills, the big difference is what they encapsulate and what they should be used for. Instructions only allow markdown files and should be used for guidelines mostly. Skills on the other hand, allow scripts and supporting resources and should be used for task-specific operations
 
-As to help with starting creating your own - as well as understand their use cases - refer to the header parameters list for each of the customization files:
+A good decision table can be found at the [Customization options at a glance](https://code.visualstudio.com/docs/agents/concepts/customization#_customization-options-at-a-glance) chapter - which I have pasted below for quicker analysis:
+| Goal | Use | Example | When it activates |
+| ---- | --- | ------- | ----------------- |
+| Apply the same coding standards to all code. | (Always-on) `instructions`  | Enforce OOP rules or require JSDoc comments and naming conventions. | Automatically included in every request. |
+| Apply different rules to different file types | (File-based) `instructions` | React patterns for `.tsx` files | When files match a pattern or description |
+| Automate a multi-step workflow that needs scripts   | `Skills` | Scaffold a service from bundled template files and a setup script | When the task matches the skill description |
+| Give the AI a focused role with limited tools | `Custom Agents` | Security reviewer, database admin | When you select it or another agent delegates to it |
+| Connect the AI to external APIs or databases | `MCP` | Query a PostgreSQL database | When the task matches a tool description |
+| Run a command automatically during the agent's work | `Hooks` | Run a formatter after every file edit | When the agent reaches a matching lifecycle event |
+| Run a repeatable task on demand | `Prompt` | Scaffold a React component                                        | When you invoke a slash command |
+
+Regardless, to help with starting creating your own set of customizations - as well as understand their use cases - refer to the header parameters list for each of the customization files:
 
 #### **1. Instruction Files Headers**
 | Field | Required | Description |
@@ -708,6 +719,26 @@ As to help with starting creating your own - as well as understand their use cas
 | `name` | No | Display name shown in the UI. Defaults to the file name. |
 | `description` | No | Short description shown on hover in the Chat view. |
 | `applyTo` | No | **Glob pattern** that defines which files the instructions apply to automatically, relative to the workspace root. Use `**` to apply to all files. If not specified, the instructions are not applied automatically, but you can still add them manually to a chat request. |
+
+You can use these type of files to add styling choices, headers and even force patterns on generated code or reports.
+
+<details close>
+<summary>Instance of a Instruction file for Python</summary>
+
+```markdown
+---
+name: Python Standards
+description: Coding conventions for Python files
+applyTo: **/*.py
+---
+# Python coding standards
+- Follow the PEP 8 style guide.
+- Use type hints for all function signatures.
+- Write docstrings for public functions.
+- Use 4 spaces for indentation.
+```
+</details>
+
 
 #### **2. Prompt Files Headers**
 | Field | Required | Description |
@@ -719,6 +750,35 @@ As to help with starting creating your own - as well as understand their use cas
 | `model` | No | The language model used when running the prompt. If not specified, the currently selected model in model picker is used. |
 | `tools` | No | A list of tool or tool set names that are available for this prompt. Can include built-in tools, tool sets, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format. Learn more about tools in chat. |
 
+A good instance of where these are very useful is in report making and analyzing. But typing for instance `\AWS-FINOPS` you will get an already formatted, orchastrated to use the correct agents and check the wanted resources.
+
+<details close>
+<summary>Instance of a Prompt file</summary>
+
+```markdown
+---
+name: AWS Resource Review
+description: This prompt is used to review AWS resources and provide recommendations for optimization, security, and cost management.
+argument-hint: Please provide the AWS resource details you would like to review, including any specific concerns or areas of focus (e.g., security, cost, performance).
+agent: finops-aws-expert
+---
+
+## Workflow
+1. **Input Collection**: Gather detailed information about the AWS resources to be reviewed, including resource types, configurations and any specific concerns or areas of focus (e.g., security, cost, performance).
+2. **Resource Analysis**: Analyze the provided AWS resource details to identify potential optimization opportunities, security vulnerabilities, and cost-saving measures.
+3. **Recommendations**: Provide actionable recommendations for optimizing the AWS resources, enhancing security, and managing costs effectively.
+
+## Format and Styling
+- Use clear and concise language to communicate findings and recommendations.
+- Organize recommendations into categories (e.g., Security, Cost Optimization, Performance).
+- Include specific examples or references to AWS best practices where applicable.
+
+## Login
+Use the Skill found at `.github\skills\aws-login` to perform the AWS login according to company standards.
+```
+</details>
+
+
 #### **3. Skill Files Headers**
 | Field | Required | Description |
 | --- | --- | --- |
@@ -728,6 +788,28 @@ As to help with starting creating your own - as well as understand their use cas
 | `user-invocable` | No | Controls whether the skill appears as a slash command in the chat menu. Defaults to `true`. Set to `false` to hide the skill from the `/` menu while still allowing the agent to load it automatically. |
 | `disable-model-invocation` | No | Controls whether the agent can automatically load the skill based on relevance. Defaults to `false`. Set to `true` to require manual invocation through the `/` slash command only. |
 | `context` | No | (Experimental) Controls how the skill is loaded. Defaults to inline (the skill's instructions are added to the parent agent's context). Set to `fork` to run the skill in a dedicated subagent context. See Run a skill in a forked context. |
+
+<details close>
+<summary>Instance of a Skill file</summary>
+
+```markdown
+---
+name: conventional-commit
+description: Prompt and workflow for generating conventional commit messages using a structured XML format. Guides users to create standardized, descriptive commit messages in line with the Conventional Commits specification, including instructions, examples, and validation.
+---
+
+### Workflow
+**Follow these steps:**
+1. Run `git status` to review changed files.
+2. Run `git diff` or `git diff --cached` to inspect changes.
+3. Stage your changes with `git add <file>`.
+4. Construct your commit message using the following XML structure.
+5. After generating your commit message, Copilot will automatically run the following command in your integrated terminal (no confirmation needed): `git commit -m "type(scope): description"`
+6. Just execute this prompt and Copilot will handle the commit for you in the terminal.
+
+```
+
+</details>
 
 #### **4. Custom Agent Files Headers**
 | Field | Description |
@@ -827,6 +909,16 @@ project-root/
 └── README.md
 ```
 
+test:
+![Alt text](./attachments/images%20outputs/ai-ecosystem.svg "Instance of relationship of AI customization files" ){ width=300px height=200px }
+
+test2:
+<div align="center">
+  <img src="./attachments/images%20outputs/ai-ecosystem.svg" alt="Centered Image" style="max-width: 60%; height: auto;">
+</div>
+
+<img src="image.jpg" alt="Responsive Image" style="max-width: 100%; height: auto;">
+
 So, starting from the ground up so that we can both understand the project we depicted, as well as have set up a project of our own with only the needed files:
 * `AGENTS.md`: is an open format meant to be used as the team's baseline context: coding standards, libraries, project architecture - and is loaded automatically in every chat. Rule of thumb: think as "things you'ld tell a new teammate on day one";
 * `.github\copilot-instructions.md`: this is an optional file that pretty much overlaps with the previous `AGENTS.md` and is only locked to be used by github copilot. However, it is necessary for some features like copilot review, so leave it statically to refer to the latter if possible for the best results;
@@ -863,7 +955,9 @@ Notice also that from research papers we've found that AI Generated `AGENTS.md` 
 #### About good custom agents:
 Is good to keep a chat only with an orchestrator agent, since that way we can leverage a "planner" agent to debate you and a coder agent that executes code changes but does not et polluted with the conversation context.
 
-
+- [ ] Review the Tools chapter;
+- [ ] Review the organization of tree in Skills;
+- [ ] 
 
 ```json
 {
