@@ -131,7 +131,7 @@ To study from (BACKLOG):
 * [The ultimate guide to the GitHub Copilot CLI | Full demo | GitHub Checkout](https://www.youtube.com/watch?v=VkOibxsQ1oU)
 * [Getting started with GitHub Copilot CLI | Tutorial for beginners](https://www.youtube.com/watch?v=BDxRhhs36ns)
 * [LangGraph Complete Course for Beginners – Complex AI Agents with Python](https://www.youtube.com/watch?v=jGg_1h0qzaM)
-* []()
+* [9 Things People Get Wrong With My /grill-* skills](https://www.youtube.com/watch?v=UzMNBN6xLLA&t=1s)
 
 Queue:
 * [I Replaced ChatGPT With Claude for All My Azure Work (Here's What Happened)](https://www.youtube.com/watch?v=Prv7VGqaiKI)

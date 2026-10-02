@@ -257,16 +257,16 @@ They allow the benefits like:
 * **The Blueprint:** Where a skill tells the agent *how* to use its tools. For example, an "Azure Deployment Skill" would contain the troubleshooting flows and best practices for ARM templates, rather than just the raw API.
 
 To use them, you should follow and **read** the [Agent Skills Article](https://agentskills.io/home) - as well as check the necessary fields in the [AI Customization's Skill Headers](#3-skill-files-headers) - but in summary, you can set one and use it by:
-1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".agents/skills/[concept-identifier]".
+1. **Creating a Skill folder:** where all the skill files will be looked over in. On VSCode, the path would be ".github/skills/[concept-identifier]".
 2. **Creating a SKILL.md file:** inside the folder, where it should have a *Name*, *Description* (encapsuled in "---") and the body - which is free text of explanations.
 3. **Add other folders and files:** if needed, with related content like code, documentation or templates, following an hierarchical order. You can then refer to those like "*To check template details go to './extra-details.md'*".
 4. **Check if has been created:** by asking you agent, like in VSCode, to see the custom skills you just created, and wait for the output list.
 5. **Try using it:** by selecting the type "Agent" in the VS copilot and typing "/skills" until your skill's name shows up. Alternatively, you can just refer it exists to your agent and he will figure out where they are from then on, or set it on the description to be used when a key word is found.
 
-The end project would then be similar to this:
+With them, the project should be similar to this:
 ```
 project-root/
-├── **.agents/**
+├── **.github/**
 │   └── **skills/**
 │       └── **azure-vm-control/**
 │           └── **SKILL.md**
@@ -274,16 +274,14 @@ project-root/
 ├── tools/
 │   ├── README.md               ← Documents all available tools
 │   ├── config.json             ← Tool registry (what you created)
-│   ├── start_vm.json
 │   ├── start_vm.ps1
-│   ├── check_quotas.json
 │   └── check_quotas.ps1
 │
-├── agent-config.json           ← Main config (references .agents/ and tools/)
+├── agent-config.json           ← Main config (references .github/ and tools/)
 └── ...
 ```
 
-Be careful to make sure that the skills are loaded - often times they are cached and not frequently fetched, so you might need to request it to be fecthed again, specially on VSCode, since they usually use their own folder terminology as `.github` which includes automatic registration.
+Be careful to **make sure that the skills are loaded** - often times they are cached and not frequently fetched, so you might need to request it to be fecthed again, specially on VSCode, since they usually use their own folder terminology as `.github` which includes automatic registration.
 
 Anyhow, you can find already plenty of public shared skills. Some valuable ones are [azure-skills (github)](https://github.com/microsoft/azure-skills) of Microsoft and [terraform-skills](https://github.com/antonbabenko/terraform-skill), for instance.
 
@@ -295,7 +293,7 @@ Anyhow, you can find already plenty of public shared skills. Some valuable ones 
 ### **XII. Agents features (2/2): Tools**
 Still, if the goal is to fetch currently available and often updated data from external sources, a Skill explaining how to call an API or even describing that necessary data won't do as it is not suitable for very dynamic scenarios. Hence, the need to allow for Agents to fetch data, comunicate and make actions in third party systems appeared and the concept of **tools** was created. 
 
-Tools are nothing more than **"peripheral devices" for your agent** (like the "mouse", "keyboard" or "monitor" for your laptop). Without them, the agent would be like an isolated VM with no NIC whose action and scope is limited to itself and to its training. However they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
+Tools are nothing more than **"peripheral devices" for your agent** (like the "mouse", "keyboard" or "monitor" for your laptop). Without them, the agent would be like an isolated VM with no network interface card (NIC) whose action and scope is limited to itself and to its training. However they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
 
 Every tool has 3 essential components: 
 * **Registration**: So that Agent can know what to use the tool for.
@@ -384,7 +382,7 @@ Or in the `./tools/config.json` path like so:
             "id": "start_azure_vm",
             "schema_path": "./start_vm.json",
             "implementation_path": "./start_vm.ps1",
-            "skill_reference": "../.agents/skills/azure-vm-control/SKILL.md"
+            "skill_reference": "../.github/skills/azure-vm-control/SKILL.md"
         },
         {
             "id": "check_azure_quotas",
@@ -413,7 +411,7 @@ Or the root path `./agent-config.json`, in case you want to register also Skills
       "type": "powershell"
     }
   ],
-  "skills_path": "./.agents/skills",
+  "skills_path": "./.github/skills",
   "rag_enabled": true,
   "mcpServers": {
     "azure-vm": {
@@ -424,7 +422,7 @@ Or the root path `./agent-config.json`, in case you want to register also Skills
 }
 ```
 
-And, in the end, on a agent folder like `.agents/agents/developer/tools.json` where only he will know how to use it:
+And, in the end, on a agent folder like `.github/agents/developer/tools.json` where only he will know how to use it:
 ```json
 {
   "agent_id": "developer",
@@ -456,7 +454,7 @@ Leading to the following project organization:
 ```
 project-root/
 │
-├── .agents/                      # The Control Plane (or .github)
+├── .github/                      # The Control Plane (or .github)
 │   ├── agent-config.json         # Orchestrator config (Global Policy)
 │   │
 │   └── skills/                      # The "Logic Apps" / Runbooks
@@ -698,7 +696,7 @@ A better (probably always up to date) in-depth analysis of these concepts can be
 * `Custom Agents`: often called personas, are `*.agent.md` files that allow to customize agents to interact with user in a certain pattern or focus on a specific topic to prevent hallocinations;
 * `Hooks`: enables you to activate shell commands or scripts at key points of the agent's workflow. A use case of their usage is to activate logs, block dangerous operations or just force explicit approval from user everytime.
 
-> Between the instructions and the Skills, the big difference is what they encapsulate and what they should be used for. Instructions only allow markdown files and should be used for guidelines mostly. Skills on the other hand, allow scripts and supporting resources and should be used for task-specific operations
+> Note: Between the instructions and the Skills, the big difference is what they encapsulate and what they should be used for. Instructions only allow markdown files and should be used for guidelines mostly. Skills, on the other hand, allow scripts and supporting resources and should be used for task-specific operations.
 
 A good decision table can be found at the [Customization options at a glance](https://code.visualstudio.com/docs/agents/concepts/customization#_customization-options-at-a-glance) chapter - which I have pasted below for quicker analysis:
 | Goal | Use | Example | When it activates |
@@ -709,7 +707,7 @@ A good decision table can be found at the [Customization options at a glance](ht
 | Give the AI a focused role with limited tools | `Custom Agents` | Security reviewer, database admin | When you select it or another agent delegates to it |
 | Connect the AI to external APIs or databases | `MCP` | Query a PostgreSQL database | When the task matches a tool description |
 | Run a command automatically during the agent's work | `Hooks` | Run a formatter after every file edit | When the agent reaches a matching lifecycle event |
-| Run a repeatable task on demand | `Prompt` | Scaffold a React component                                        | When you invoke a slash command |
+| Run a repeatable task on demand | `Prompt` | Start a FinOps Analysis of an Account | When you invoke a slash command |
 
 Regardless, to help with starting creating your own set of customizations - as well as understand their use cases - refer to the header parameters list for each of the customization files:
 
@@ -808,8 +806,8 @@ description: Prompt and workflow for generating conventional commit messages usi
 6. Just execute this prompt and Copilot will handle the commit for you in the terminal.
 
 ```
-
 </details>
+
 
 #### **4. Custom Agent Files Headers**
 | Field | Description |
@@ -833,8 +831,44 @@ description: Prompt and workflow for generating conventional commit messages usi
 | `handoffs.model` | Optional language model to use when the handoff executes. Use the qualified model name in the format `Model Name (vendor)`, for example `GPT-5 (copilot)` or `Claude Sonnet 4.5 (copilot)`. |
 | `hooks` (Preview) | Optional hook commands scoped to this agent. Hooks defined here only run when this agent is active, either invoked by the user or as a subagent. Uses the same format as hook configuration files. Requires `chat.useCustomAgentHooks` to be enabled. |
 
-#### **5. Hooks File**
-In this case, since the Hooks are described in a `json` format, lets go over the hooks events we can configure for:
+<details close>
+<summary>Instance of a Agent file</summary>
+
+```markdown
+---
+name: "C# Expert"
+description: An agent designed to assist with software development tasks for .NET projects.
+user-invocable: true
+tools: [search/codebase, search/usages, web/fetch, 'azure-mcp/*']
+hooks:
+  PostToolUse:
+    - type: command
+      command: "./scripts/format-changed-files.sh"
+---
+
+You are an expert C#/.NET developer. You help with .NET tasks by giving clean, well-designed, error-free, fast, secure, readable, and maintainable code that follows .NET conventions. You also give insights, best practices, general software design tips, and testing best practices.
+
+You are familiar with the currently released .NET and C# versions (for example, up to .NET 10 and C# 14 at the time of writing). (Refer to https://learn.microsoft.com/en-us/dotnet/core/whats-new and https://learn.microsoft.com/en-us/dotnet/csharp/whats-new for details.)
+
+When invoked:
+- Understand the user's .NET task and context
+- Propose clean, organized solutions that follow .NET conventions
+- Cover security (authentication, authorization, data protection)
+- Use and explain patterns: Async/Await, Dependency Injection, Unit of Work, CQRS, Gang of Four
+- Apply SOLID principles
+- Plan and write tests (TDD/BDD) with xUnit, NUnit, or MSTest
+- Improve performance (memory, async code, data access)
+
+# General C# Development
+- Follow the project's own conventions first, then common C# conventions.
+- Keep naming, formatting, and project structure consistent.
+
+```
+</details>
+
+
+#### **5. Hooks File Triggers**
+In this case, Hooks are described in a `json` format instead of the usual `markdown` file. All, likewise, it also has a strict list of triggers you can set to, namely:
 
 | Hook Event | When It Fires | Common Use Cases |
 | --- | --- | --- |
@@ -846,6 +880,13 @@ In this case, since the Hooks are described in a `json` format, lets go over the
 | `SubagentStart` | Subagent is spawned | Track nested agent usage, initialize subagent resources |
 | `SubagentStop` | Subagent completes | Aggregate results, cleanup subagent resources |
 | `Stop` | Agent session ends | Generate reports, cleanup resources, send notifications |
+
+To better represent the place where each happens in the ai interaction, check the image below:
+![Alt text](./attachments/images%20outputs/files_ai-loop-hooks.svg "Hooks Triggers' List in the Agentic Loop" ){ width=300px height=200px }
+
+
+<details close>
+<summary>Instance of a Agent file</summary>
 
 The end product would be something kin to this `.github/hooks/formatting.json` hook for instance:
 ```json
@@ -866,12 +907,12 @@ The end product would be something kin to this `.github/hooks/formatting.json` h
 
 ---
 
-### **XIV. Overview of a full Agentic AI project**
+### **XIV. Overview and Relationship within an Agentic project**
 Every Agentic project have a set of structures that should be followed. These can in some part be ignored, but I believe they should be kept and just "fine-tuned" for best outcomes, leading to the following project structure:
 ```
 project-root/
 │
-├── .agents/                        # The Control Plane
+├── .github/                        # The Control Plane
 │   ├── agent-config.json         # Orchestrator config (Global Policy)
 │   │
 │   ├── agents/                   # The "Virtual Machine" Definitions
