@@ -251,8 +251,8 @@ Due to the high reasoning metadata created by Agents, as well as some recurrent 
 
 To solve it, developers then thought of keeping **markdown "documentation" files** regarding **private data**, **domaind-specific knowledge**, **task-oriented guidance/requirements** (like policies and guardrails) and even reasoning metadata (less likely but possible) **in** the project itself to be findable and usable by the agent **if** he thinks is useful - the so called "**Skills**".
 
-They allow the benefits like:
-* **Structured Metadata:** In frameworks like **Agent Skills** (used in tools like *Claude Code* or *Antigravity*), being defined in `SKILL.md` files. 
+They allow benefits like:
+* **Structured Metadata:** since once they are set in a project, everyone will have the same information added, allowing for consistent results in a team;
 * **Progressive Disclosure:** To save on "Compute Cost" (Tokens), mening that skills allow agents to load only the specific documentation or logic needed for a task — like **Dynamic Library Loading** in OS architecture - according to the info provided in Skill's name and description, keeping loading to the minimum.
 * **The Blueprint:** Where a skill tells the agent *how* to use its tools. For example, an "Azure Deployment Skill" would contain the troubleshooting flows and best practices for ARM templates, rather than just the raw API.
 
@@ -267,17 +267,17 @@ With them, the project should be similar to this:
 ```
 project-root/
 ├── **.github/**
+│   ├── copilot-instructions.md   ← References ´AGENTS.md´
 │   └── **skills/**
 │       └── **azure-vm-control/**
 │           └── **SKILL.md**
 │
-├── tools/
-│   ├── README.md               ← Documents all available tools
-│   ├── config.json             ← Tool registry (what you created)
+├── project/
+│   ├── README.md                 ← Documents all available tools
 │   ├── start_vm.ps1
 │   └── check_quotas.ps1
 │
-├── agent-config.json           ← Main config (references .github/ and tools/)
+├── AGENTS.json           ← Describes project and always-on instructions
 └── ...
 ```
 
@@ -291,19 +291,70 @@ Anyhow, you can find already plenty of public shared skills. Some valuable ones 
 ---
 
 ### **XII. Agents features (2/2): Tools**
-Still, if the goal is to fetch currently available and often updated data from external sources, a Skill explaining how to call an API or even describing that necessary data won't do as it is not suitable for very dynamic scenarios. Hence, the need to allow for Agents to fetch data, comunicate and make actions in third party systems appeared and the concept of **tools** was created. 
+If the **Generative AI** is the brain and the **Skills** additional custom knowledge, then **Tools** are what allows to translate ideas into actions!
 
-Tools are nothing more than **"peripheral devices" for your agent** (like the "mouse", "keyboard" or "monitor" for your laptop). Without them, the agent would be like an isolated VM with no network interface card (NIC) whose action and scope is limited to itself and to its training. However they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
+Tools are essential to agents as they are the key difference between Agentic AI or , Skills usually 
+if the goal is to fetch currently available or often updated data from external sources. Or to allow
+
+
+
+a Skill explaining how to call an API or even describing that necessary data won't do as it is not suitable for very dynamic scenarios. Hence, the need to allow for Agents to fetch data, comunicate and make actions in third party systems appeared and the concept of **tools** was created. 
+
+Tools are nothing more than **"peripheral devices" for your agent** (like the "mouse", "keyboard" or "monitor" for your laptop). Without them, the agent would be like an isolated VM with no network interface card (NIC) whose action and scope is limited to itself and to its training. That is why they are the **critical detail that allow Foundational Models to gain agency** - capable of perceiving, deciding and acting autonomously - over **function calls**, **API integrations**, database queries, code execution and system commands.
+
+Currently in the article [VSCode - Types of Tools](https://code.visualstudio.com/docs/agents/concepts/tools) and other sources we can define 4 tool types:
+
+| Tool Class | What It Is | Best Used For | Examples |
+| --- | --- | --- | --- |
+| **Built-In Tools** | Pre-packaged capabilities provided natively by the agent orchestrator or IDE. | Standard file manipulation, simple web searches, or basic terminal runs. | VS Code file-reading, default web search APIs. |
+| **Extension tools** | contributed by extension providers in VSCode after installing them. | Specific knowledge or actions in a given scope | Cosmos DB, Foundry or Jupyter that helps handling files. |
+| **MCP Tools (Model Context Protocol)** | An open standard for exposing tools and resources over standardized client-server interfaces. | Universal database connectors, SaaS platform links, and cross-editor tool sharing. | GitHub MCP Server, Postgres MCP, Filesystem MCP. |
+| **Custom Tools** | In-house functions or scripts built directly into your application codebase. | Project-specific business logic, specialized data parsers, or local environment scripts. | A PowerShell script that automates project setup or a Python script that validates custom schemas. |
 
 Every tool has 3 essential components: 
 * **Registration**: So that Agent can know what to use the tool for.
 * **Schema**: JSON Schema formatted file with type validation, enums, patterns, descriptions, allowing to know how to use the tool.
-* **Executable**: in a file like python, Javascript, or other that the agent should be able to run. In it, it should address:
+* **Executable Script**: in a file like python, Javascript, or other that the agent should be able to run. In it, it should address:
     * All error paths (timeout, permission, validation)
     * Return **consistent structure** (always include `status` field)
     * Include **metadata** (execution_time_ms, timestamps) for debugging purposes
     * Provide **actionable errors messages** (what went wrong + what the agent should do)
     * Set **retry hints** (retry_after_seconds, required_role)
+
+But the format you choose to define all 3 components can change however. Let's dig in the **custom tool** for instance, that a developer like ourselves might want to develop. We should **start by setting the script** before anything else so let's imagine we want to set a `scripts/ensure-npx.ps1`)powershell script that provisions environment dependencies:
+```powershell
+# scripts/ensure-npx.ps1
+param (
+    [string]$NodeVersion = "v24.16.0"
+)
+
+if (Get-Command npx -ErrorAction SilentlyContinue) {
+    Write-Output '{"status": "success", "message": "npx is already available."}'
+    exit 0
+}
+
+# Fallback installer logic
+try {
+    winget install OpenJS.NodeJS.LTS --silent --accept-package-agreements
+    Write-Output '{"status": "installed", "message": "Node.js installed via winget."}'
+} catch {
+    # Fallback to direct download if winget fails
+    $msiUrl = "https://nodejs.org/dist/v24.16.0/node-v24.16.0-x64.msi"
+    $outPath = "$env:TEMP\node-installer.msi"
+    Invoke-WebRequest -Uri $msiUrl -OutFile$outPath
+    Start-Process msiexec.exe -ArgumentList "/i `"$outPath`"" -Wait
+    Write-Output '{"status": "manual_installed", "message": "Installer executed."}'
+}
+```
+
+Then, we need to set the **schema of the tool**. This informs the agent **what** the tool does, **when** to call it, and **what parameters** it accepts and 
+Then, to make it recognizable as a tool by the agent, you will need to register it. Here you can either:
+1. Register in `.vscode/settings.json`: where you would then 
+2. 
+
+> NOTE:
+> There is a third option - to register it within Skills, making them active only with the scope of the skill itself and reducing the context
+
 
 A tools schema declares the **tool's interface using a standardized format** (typically JSON Schema) although it only gets validated during invocation time. Here is a template:
 ```json
@@ -469,7 +520,7 @@ project-root/
 │           ├── component_maps.md   # Topology references
 │           └── references.md          ← Links to related tools
 │
-├── .mcp/                           # The "Network Interface" (Tools)
+├── .vscode/                           # The "Network Interface" (Tools)
 │   ├── azure-server.json           # Config for Azure MCP connection
 │   └── gitlab-client.json          # Config for GitLab integration
 │
@@ -642,6 +693,13 @@ About the way to use them, its also plainly simple. Althought its considered a t
 Check the declaration of the `git.json` and `azure-server.json` mcp clients below:
 ```json
 {
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "client-secret",
+      "description": "Client Secret of a Service Principal in case the CLI login is not available"
+    }
+  ],
   "servers": {
     "git-local": {
       "command": "npx",
@@ -655,13 +713,7 @@ Check the declaration of the `git.json` and `azure-server.json` mcp clients belo
         "GIT_AUTHOR_NAME": "Agentic Developer",
         "GIT_AUTHOR_EMAIL": "agent@yourproject.local"
       }
-    }
-  }
-}
-```
-```json
-{
-  "servers": {
+    },
     "azure-foundry-tools": {
       "command": "npx",
       "args": [
@@ -674,10 +726,17 @@ Check the declaration of the `git.json` and `azure-server.json` mcp clients belo
         "AZURE_PROJECT_CONNECTION_STRING": "endpoint=https://<YOUR_RESOURCE_NAME>.services.ai.azure.com/;project_id=<YOUR_PROJECT_ID>",
         "AZURE_CLIENT_ID": "<YOUR_MANAGED_IDENTITY_OR_APP_ID>",
         "AZURE_TENANT_ID": "<YOUR_TENANT_ID>",
-        "AZURE_CLIENT_SECRET": "<YOUR_CLIENT_SECRET_IF_NOT_USING_CLI_AUTH>",
+        "AZURE_CLIENT_SECRET": "${input:client-secret}",
         "FOUNDRY_AGENT_LOCATION": "eastus"
       }
     }
+  }
+}
+```
+```json
+{
+  "servers": {
+    
   }
 }
 ```
@@ -868,7 +927,7 @@ When invoked:
 
 
 #### **5. Hooks File Triggers**
-In this case, Hooks are described in a `json` format instead of the usual `markdown` file. All, likewise, it also has a strict list of triggers you can set to, namely:
+In this case, Hooks are described in a `json` format instead of the usual `markdown` file. Although, likewise, it also has a strict list of triggers you can set to, namely:
 
 | Hook Event | When It Fires | Common Use Cases |
 | --- | --- | --- |
@@ -881,9 +940,24 @@ In this case, Hooks are described in a `json` format instead of the usual `markd
 | `SubagentStop` | Subagent completes | Aggregate results, cleanup subagent resources |
 | `Stop` | Agent session ends | Generate reports, cleanup resources, send notifications |
 
-To better represent the place where each happens in the ai interaction, check the image below:
-![Alt text](./attachments/images%20outputs/files_ai-loop-hooks.svg "Hooks Triggers' List in the Agentic Loop" ){ width=300px height=200px }
+To better represent the place where each happens in the agentic interaction, refer to the workflow below:
+![Alt text](./attachments/images%20outputs/files_ai-loop-hooks.svg "Hooks Triggers' List in the Agentic Loop" ){ width=600px height=400px }
 
+Now, the main difference is that, as a json, you will have to **set a handful of available parameters to define the action** you want to be taken for each hook/trigger object (after deciding what the triggering point is).
+Those parameters can vary from environment to environment, as you can check in [GitHub - Hook Configuration Format](https://docs.github.com/en/copilot/reference/hooks-reference#hook-configuration-format) but in a summary key list, for each hook, you have the following core options:
+
+| Field | Type | Required | Description |
+| ----- | --- | --- | --- |
+| `args`    | array of strings | No | Arguments passed directly to `exec`. Only supported in Copilot CLI. |
+| `bash`    | string | One of `bash`, `powershell`, or `command`, unless `exec` is specified | Shell command for Unix. |
+| `command` | string | One of `bash`, `powershell`, or `command`, unless `exec` is specified | Cross-platform fallback. Copied to both bash and powershell when those fields are absent; explicit bash or powershell entries take precedence on their respective platforms. |
+| `cwd`     | string | No | Working directory for the command (relative to repository root or absolute). |
+| `env`     | object | No | Environment variables to set (supports variable expansion). |
+| `exec`    | string | Instead of `bash`, `powershell`, and `command` | Executable name or path. Runs the executable directly without a shell. Only supported in Copilot CLI. |
+| `powershell` | string | One of `bash`, `powershell`, or `command`, unless `exec` is specified | Shell command for Windows. |
+| `timeout` | number | No | Alias for timeoutSec, in seconds. Used only when timeoutSec is absent; timeoutSec takes precedence when both are present. |
+| `timeoutSec` | number | No | Timeout in seconds. Default: 30. |
+| `type`    | "command" | No | Hook type. Defaults to "command" when omitted. |
 
 <details close>
 <summary>Instance of a Agent file</summary>
@@ -899,11 +973,19 @@ The end product would be something kin to this `.github/hooks/formatting.json` h
         "windows": "powershell -File scripts\\format-changed-files.ps1",
         "timeout": 30
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "powershell": ".\\scripts\\change_conversation_title.ps1",
+        "cwd": ".github/hooks"
+      }
     ]
   }
 }
 
 ```
+</details>
 
 ---
 
@@ -935,7 +1017,7 @@ project-root/
 │           ├── component_maps.md   # Topology references
 │           └── references.md          ← Links to related tools
 │
-├── .mcp/                           # The "Network Interface" (Tools)
+├── .vscode/                           # The "Network Interface" (Tools)
 │   ├── azure-server.json           # Config for Azure MCP connection
 │   └── gitlab-client.json          # Config for GitLab integration
 │
